@@ -2205,6 +2205,18 @@
   border-right: none;
   position: sticky; top: 0; height: 100vh;
   display: flex; flex-direction: column; padding: 26px 16px 16px;
+  /* Sidebar dibikin scroll-safe: di layar pendek (tinggi viewport < ~700px)
+     isi menu + blok brand melebihi tinggi sidebar, dan tanpa ini item paling
+     bawah (Notifikasi, Pengaturan, user box) kepotong dan nggak bisa
+     disentuh. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.25) transparent;
+}
+.pas-side::-webkit-scrollbar { width: 6px; }
+.pas-side::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.25); border-radius: 99px;
 }
 .pas-side .pas-display { color: #FFFFFF !important; }
 .pas-side .pas-stencil { color: rgba(255,255,255,.7) !important; }
@@ -2379,15 +2391,23 @@ table.pas-tbl tbody tr:hover { background: #FAF6EE; }
 
 /* ── JC Apparel: brand tengah di sidebar (mockup .brand) ── */
 .pas-brand {
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
-  padding: 6px 8px 26px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 6px 8px 18px; text-align: center;
 }
-/* Logo brand sekarang monogram "JC" (rasio ±1.48:1, 600×406) — lambang
-   berdiri, bukan lockup mendatar. Tingginya dibiarkan ikut lebar, tapi
-   max-width-nya dibatasi supaya mark tidak memenuhi sidebar. */
-.pas-brand-mark { width: 100%; max-width: 176px; display: grid; place-items: center; }
+/* Logo brand = monogram "JC" (rasio ±1.48:1, 600×406) — lambang berdiri,
+   bukan lockup mendatar seperti badge lama.
+
+   Lebarnya dibatasi 124px (tinggi ±84px). Monogramnya lebar dan bertumpuk:
+   pada 176px logonya jadi 119px dan memakan hampir seperempat sidebar,
+   sementara nama brand + sub-nya tinggal sedikit. 124px menurunkan blok
+   brand dari 203px ke 168px — cukup buat menu tetap muat di layar laptop
+   768px tanpa scroll.
+
+   `max-height` di <img> sebagai pengaman: kalau logo diganti dengan lambang
+   yang lebih tinggi, ukurannya tetap terkontrol dan sidebar nggak meluber. */
+.pas-brand-mark { width: 100%; max-width: 124px; display: grid; place-items: center; }
 .pas-brand-mark img {
-  width: 100%; height: auto; object-fit: contain; display: block;
+  width: 100%; height: auto; max-height: 84px; object-fit: contain; display: block;
   filter: drop-shadow(0 8px 22px rgba(35, 187, 183,.45));
 }
 .pas-brand-name {
@@ -2397,6 +2417,18 @@ table.pas-tbl tbody tr:hover { background: #FAF6EE; }
 .pas-brand-sub {
   display: block; color: rgba(255,255,255,.85); font-size: 11px; letter-spacing: 1.4px;
   text-transform: uppercase; margin-top: 3px;
+}
+
+/* Layar pendek: rapatkan ritme vertikal sidebar supaya semua menu —
+   termasuk yang paling bawah — tetep kelihatan tanpa perlu scroll.
+   Dipicu max-height, bukan max-width: masalahnya tinggi, bukan lebar. */
+@media (max-height: 760px) {
+  .pas-side { padding: 16px 14px 12px; }
+  .pas-brand { gap: 8px; padding: 4px 8px 14px; }
+  .pas-brand-mark { max-width: 96px; }
+  .pas-brand-mark img { max-height: 66px; }
+  .pas-navsec { margin: 10px 0 6px; }
+  .pas-navlink { padding: 7px 12px; }
 }
 
 /* ── JC Apparel: user box gelap di bawah sidebar (mockup .user) ── */
