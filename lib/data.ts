@@ -30,9 +30,9 @@ export const brand: Brand = {
   name: "JC Apparel",
   monogram: "JC",
   tagline:
-    "Tempat Bikin Jersey Futsal Custom.\nDesain bebas, harga pabrik, kirim se-Indonesia.",
+    "Tempat Bikin Jersey Futsal Custom.\nSportswear & Clothing Manufacturer",
   description:
-    "JC Apparel — tempat bikin jersey futsal custom full printing. Desain bebas, harga mulai 85rb, kirim se-Indonesia. Konsultasi gratis via WhatsApp.",
+    "JC Apparel — tempat bikin jersey futsal custom full printing. Sportswear & Clothing Manufacturer. Konsultasi gratis via WhatsApp.",
   whatsappNumber: WA_NUMBER,
   logoPath: "/brand-logo.png",
 };
