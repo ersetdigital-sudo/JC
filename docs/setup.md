@@ -5,6 +5,29 @@ milik JC Apparel sendiri. Semua langkah berurutan — jangan loncat.
 
 ---
 
+## 0. Yang sudah siap
+
+| Service | Status |
+| --- | --- |
+| **Supabase** | ✅ Project **JC APPAREL** sudah dibuat — ref `jvdqphlwulgtssxgpebq`, region `ap-southeast-2` (Sydney), URL `https://jvdqphlwulgtssxgpebq.supabase.co`. Migrasi `0001`–`0012` sudah dijalankan dan tercatat di `public.supabase_migrations`. Signup Auth sudah dimatikan. |
+| **Cloudinary** | ⬜ Belum — buat akun + preset `jc-apparel-signed` (bagian 4) |
+| **Vercel** | ⬜ Belum — import repo, isi env var (bagian 5) |
+| **Fonnte** | ⬜ Belum — token device, diisi dari dashboard → Pengaturan → WhatsApp |
+
+> ### ⚠️ `NEXT_PUBLIC_*` di-inline saat build
+>
+> Next.js **mengganti `process.env.NEXT_PUBLIC_*` dengan nilainya secara literal
+> saat build** — bukan saat runtime. Kalau env var-nya berubah **setelah** build,
+> bundle masih memakai nilai lama dan aplikasinyaDiam-diam jatuh ke data
+> fallback (`lib/data.ts`) tanpa error yang mencolok.
+>
+> Di Vercel ini aman: build dan run terjadi di environment yang sama, jadi
+> nilainya sama. **Tapi di lokal**, kalau kamu ganti `.env.local`, kamu wajib
+> `pnpm build` ulang sebelum `pnpm start` — `pnpm dev` tidak punya masalah ini
+> karena tidak ada bundling.
+
+---
+
 ## 1. Project Supabase
 
 1. Buat project baru di [supabase.com](https://supabase.com) (pilih region terdekat).
@@ -255,13 +278,17 @@ dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
 
 ## Checklist sebelum production
 
-- [ ] Migrasi `0001`–`0012` jalan tanpa error
-- [ ] `select name, monogram from public.brand` → `JC Apparel` / `JC`
-- [ ] 11 tabel terbentuk, 11 tahap jersey + 6 tahap maklon
+- [x] Migrasi `0001`–`0012` jalan tanpa error, tercatat di `public.supabase_migrations`
+- [x] `select name, monogram from public.brand` → `JC Apparel` / `JC`
+- [x] 11 tabel terbentuk, 11 tahap jersey + 6 tahap maklon
+- [x] Signup Supabase Auth dimatikan (`disable_signup = true`)
+- [x] RLS diuji: anon hanya bisa baca `brand` + daftar tahap; 8 tabel operasional 0 baris bocor; insert anon → 401
 - [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
-- [ ] 4 secret wajib di-set dan **tidak** sama dengan nilai contoh
-- [ ] Upload preset Cloudinary mode **Signed**
+- [ ] 4 secret wajib di-set di Vercel dan **tidak** sama dengan nilai contoh
+- [ ] Upload preset Cloudinary mode **Signed**, folder `jc-apparel/desain`
 - [ ] `APP_URL` = domain produksi
 - [ ] Cron deadline-notif jalan (cek Vercel/cron-job.org log)
 - [ ] `tsc --noEmit` dan `next build` bersih
 - [ ] Logo sudah diganti
+- [ ] Token Supabase (personal access token) dirotasi — token yang dipakai saat setup sudah pernah tampil di chat
+
