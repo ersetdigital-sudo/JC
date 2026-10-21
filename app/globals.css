@@ -3090,8 +3090,18 @@ table.pas-tbl.pas-tbl-static tbody tr:hover { background: transparent; }
 }
 
 /* ── Elemen bersama ── */
-/* Piring putih di belakang logo: logonya sendiri gelap, jadi butuh alas
-   terang di atas hero hitam.
+/* Piring (chip) di belakang logo: logonya sendiri PUTIH dengan latar
+   transparan — jadi piringnya gelap, sama seperti ikon aplikasi
+   (`app/icon.png`: latar #0A0A0A + mark putih).
+
+   Dulu piringnya putih karena logo lama (badge TAFF) bewarna gelap dan butuh
+   alas terang. Setelah logo JC masuk, piring putih membuat mark putihnya
+   hilang total.
+
+   Chip gelap juga yang bikin logonya terbaca di dua latar yang berbeda:
+   hero gradien teal (desktop + mobile slate) dan masthead cream `#F0EADF`
+   (mobile). Satu perlakuan untuk semuanya — persis seperti perlakuan ikon
+   aplikasi.
 
    Tingginya sengaja dipasang di elemen <img> (lewat kelas h-*), bukan di
    piringnya: waktu tingginya dipatok di piring lalu gambarnya diberi
@@ -3100,7 +3110,10 @@ table.pas-tbl.pas-tbl-static tbody tr:hover { background: transparent; }
    sekarang cuma membungkus isi. */
 .pas-auth-plate {
   flex: none; display: inline-block; line-height: 0;
-  padding: 5px; border-radius: 10px; background: #fff;
+  padding: 7px 12px; border-radius: 10px;
+  background: #0B2B33;
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 10px 26px rgba(0,0,0,.32);
 }
 /* Sengaja tanpa width/height di sini: aturan ini spesifisitasnya lebih tinggi
    dari kelas Tailwind, jadi menulis `height: auto` di sini akan meniadakan
