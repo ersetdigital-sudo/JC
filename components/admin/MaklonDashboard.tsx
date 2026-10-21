@@ -173,6 +173,10 @@ export default function MaklonDashboard({
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [steps, setSteps] = useState<StepRow[]>(DEFAULT_STEPS);
 
+  // Nama brand di sidebar — mengikuti nama toko dari menu Profil Toko, bukan
+  // teks tetap, supaya tidak meleset kalau nama toko diganti admin.
+  const [brandName, setBrandName] = useState("JC Apparel");
+
   const fetchOrders = useCallback(async () => {
     try {
       const res = await fetch("/api/pesanan/maklon");
@@ -208,6 +212,16 @@ export default function MaklonDashboard({
     fetchOrders();
     fetchSteps();
   }, [fetchOrders, fetchSteps]);
+
+  // Nama toko untuk sidebar. Gagal dibaca = tetap pakai nilai cadangan.
+  useEffect(() => {
+    fetch("/api/admin/profil-toko")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.name) setBrandName(d.name);
+      })
+      .catch(() => {});
+  }, []);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -273,10 +287,10 @@ export default function MaklonDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo-jc.png" alt="JC Apparel" />
+            <img src="/brand-logo-jc.png" alt={brandName} />
           </span>
           <span className="block text-center">
-            <span className="pas-brand-name">JC Apparel</span>
+            <span className="pas-brand-name">{brandName}</span>
             <span className="pas-brand-sub">Admin Panel</span>
           </span>
         </a>

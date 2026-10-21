@@ -69,6 +69,9 @@ berkasnya ada di `fonts/`, tanpa request ke Google Fonts saat build.
 
 Nama toko yang tampil di halaman publik **dibaca dari tabel `brand`** di Supabase,
 jadi bisa diubah dari dashboard (menu **Pengaturan → Profil Toko**) tanpa deploy.
+Sidebar dan drawer dashboard admin juga ikut nama yang sama — kalau nama toko
+diganti di Profil Toko, sidebar ikut berubah tanpa perlu refresh.
+
 Yang masih ditulis statis di kode:
 
 | Berkas | Isi |
@@ -77,6 +80,17 @@ Yang masih ditulis statis di kode:
 | `lib/fonnte.ts` | Nama brand di template pesan WhatsApp (4 tempat) |
 | `app/api/admin/profil-toko/route.ts` | Fallback nama toko |
 | `app/api/admin/settings/fonnte/test/route.ts` | Teks pesan tes notifikasi |
+| `app/pesanan/orders/page.tsx`, `app/pesanan/maklon/page.tsx` | Judul tab browser panel admin (`Kelola Pesanan · JC Apparel`) |
+
+> **Catatan:** judul tab browser panel admin sengaja dikunci (`title: { absolute: … }`)
+> supaya tidak ikut berubah kalau baris `brand` diedit — itu keputusan pemilik
+> toko di repo asal. Kalau mau judulnya ikut nama toko, ubah `absolute` jadi
+> `generateMetadata()` yang memanggil `getBrand()`.
+
+Menyimpan nama baru di **Profil Toko** mengubah `brand.name` di database — tapi
+**tidak** mengubah `description` dan `monogram`. Metadata SEO (title + meta
+description) masih memakai `description`, jadi kalau copy deskripsi toko juga
+diubah, itu perlu lewat migrasi SQL atau diedit langsung di tabel `brand`.
 
 ## Domain & email
 

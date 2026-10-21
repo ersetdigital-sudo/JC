@@ -459,6 +459,11 @@ export default function PesananDashboard({
   const [currentView, setCurrentView] = useState<ViewKey>("pesanan");
   const [toast, setToast] = useState("");
 
+  // Nama brand di sidebar & drawer. Bukan teks tetap: admin bisa mengganti
+  // nama toko dari menu Pengaturan → Profil Toko, dan kalau sidebar masih
+  // menulis nama lama, panel jadi tidak sinkron dengan halaman publik.
+  const [brandName, setBrandName] = useState("JC Apparel");
+
   // Grup customer untuk drawer detail — dicari dari kunci (nomor HP ternormalisasi).
   const openCustomerGroup = useMemo(
     () =>
@@ -506,6 +511,17 @@ export default function PesananDashboard({
     fetchSteps();
   }, [fetchOrders, fetchSteps]);
 
+  // Nama toko untuk sidebar. Gagal dibaca = tetap pakai nilai cadangan,
+  // sama seperti halaman publik.
+  useEffect(() => {
+    fetch("/api/admin/profil-toko")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.name) setBrandName(d.name);
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     const h = window.location.hash.replace("#", "") as ViewKey;
     if (VIEW_META[h]) setCurrentView(h);
@@ -549,10 +565,10 @@ export default function PesananDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo-jc.png" alt="JC Apparel" />
+            <img src="/brand-logo-jc.png" alt={brandName} />
           </span>
           <span className="block text-center">
-            <span className="pas-brand-name">JC Apparel</span>
+            <span className="pas-brand-name">{brandName}</span>
             <span className="pas-brand-sub">Admin Panel</span>
           </span>
         </a>
@@ -694,6 +710,7 @@ export default function PesananDashboard({
                 fetchSteps();
                 fetchOrders();
               }}
+              onBrandNameSaved={setBrandName}
             />
           )}
           {currentView === "notif" && <ViewNotif showToast={showToast} orders={orders} />}
@@ -707,8 +724,8 @@ export default function PesananDashboard({
           {/* Drawer header — satu-satunya tempat logo brand muncul di ponsel */}
           <div className="flex items-center mb-2 pr-8">
             <a href="/" className="flex flex-col gap-2 min-w-0">
-              <img src="/brand-logo-jc.png" alt="JC Apparel" className="h-10 w-auto max-w-[150px] object-contain object-left" />
-              <span className="pas-brand-name !text-[15px]">JC Apparel</span>
+              <img src="/brand-logo-jc.png" alt={brandName} className="h-10 w-auto max-w-[150px] object-contain object-left" />
+              <span className="pas-brand-name !text-[15px]">{brandName}</span>
             </a>
           </div>
           <p className="pas-navsec">Operasional</p>
@@ -2612,10 +2629,13 @@ function ViewSetting({
   showToast,
   steps,
   onStepsSaved,
+  onBrandNameSaved,
 }: {
   showToast: (msg: string) => void;
   steps: StepRow[];
   onStepsSaved: () => void;
+  /** Dipanggil setelah nama toko berhasil disimpan, supaya sidebar ikut berubah. */
+  onBrandNameSaved?: (name: string) => void;
 }) {
   const [editSteps, setEditSteps] = useState<{ name: string; position: number }[]>(
     () => steps.map((s) => ({ name: s.name, position: s.position }))
@@ -2945,6 +2965,10 @@ function ViewSetting({
                   return;
                 }
                 showToast("Profil toko tersimpan");
+                // Sidebar ikut nama baru, tanpa perlu refresh halaman.
+                if (onBrandNameSaved && tokoName.trim()) {
+                  onBrandNameSaved(tokoName.trim());
+                }
               } catch {
                 showToast("Gagal menyimpan");
               } finally {
