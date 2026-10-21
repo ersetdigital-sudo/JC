@@ -242,6 +242,11 @@ Kalau upload gagal:
 
 ### Cron pengingat deadline
 
+> **Status: sudah dibuat.** Job cron-job.org `jobId 8692027` — "JC Apparel -
+> Notifikasi Deadline". Menembak `https://jc-apparel.vercel.app/api/admin/deadline-notif`
+> dengan header `Authorization: Bearer <CRON_SECRET>`, timezone **Asia/Jakarta**,
+> **setiap jam tepat di menit 0** (`hours: [-1]`, `minutes: [0]`).
+
 `vercel.json` tidak memuat blok `crons` — pengingat deadline dijalankan dari
 [cron-job.org](https://cron-job.org):
 
@@ -250,11 +255,21 @@ Kalau upload gagal:
 | URL | `https://jc-apparel.vercel.app/api/admin/deadline-notif` |
 | Header | `Authorization: Bearer <CRON_SECRET>` |
 | Timezone | `Asia/Jakarta` |
-| Schedule | Every hour |
+| Schedule | Every hour, menit 0 |
 
 Per jam, bukan sekali sehari — panel admin mengizinkan operator memilih
 "Jam Kirim (WIB)" mana saja, jadi route yang memutuskan apakah sudah waktunya
 kirim, bukan jadwalnya.
+
+**Kenapa pakai header, bukan `?secret=` di URL?** Route-nya menerima keduanya
+(`Authorization: Bearer`, `x-cron-secret`, atau `?secret=`). Header lebih aman:
+query string routinely masuk log server, history browser, dan dashboard cron —
+secret-nya jadi bocor ke sana. Query string cuma untuk pemanggilan manual.
+
+> **Yang belum:** token Fonnte (`hasToken: false`). Tanpa itu, notifikasi
+> WhatsApp nggak bisa terkirim — jadwalnya tetap jalan, tapi tidak ada yang
+> diterima. Isi di dashboard → **Pengaturan → WhatsApp**. Kuncinya sudah
+> siap: `encryptionKeyConfigured: true`.
 
 ---
 
@@ -303,12 +318,15 @@ detailnya di [`brand-assets.md`](brand-assets.md).
 - [x] `tsc --noEmit` dan `next build` bersih
 - [x] Deploy produksi live di https://jc-apparel.vercel.app, auto-deploy dari `main` aktif
 - [x] Uji produksi: 5 halaman publik 200, login 200 / password salah 401, dashboard admin 200, upload Cloudinary signed 200, 4 endpoint tanpa kredensial → 401
-- [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
-- [ ] 4 secret wajib sudah di-set di Vercel — **rotasi setelah installs selesai**
-- [ ] Cron deadline-notif dibuat di cron-job.org (URL di bagian 5) **dan** dinyalakan dari dashboard → Pengaturan → Notifikasi Deadline
-- [ ] Token Fonnte diisi dari dashboard → Pengaturan → WhatsApp
+- [x] Cron deadline-notif dibuat di cron-job.org (`jobId 8692027`), timezone Asia/Jakarta, tiap jam menit 0, header `Authorization: Bearer`
+- [x] Notifikasi deadline dinyalakan (`enabled: true`, jam 08:00 WIB, hari 3/2/1, nomor `628115491117`)
 - [x] Logo resmi JC Apparel terpasang (`public/brand-logo.png`, `public/logo-mark.png`, ikon app)
+- [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
+- [ ] 4 secret wajib sudah di-set di Vercel — **rotasi setelah instalasi selesai**
+- [ ] Token Fonnte diisi dari dashboard → Pengaturan → WhatsApp (tanpa ini notifikasi nggak terkirim)
+- [ ] Nomor HP admin untuk pengingat deadline dicek di dashboard → Pengaturan → Notifikasi Deadline
 - [ ] Token Supabase (personal access token) dirotasi — token yang dipakai saat setup sudah pernah tampil di chat
 - [ ] Token Cloudinary **API secret** dirotasi kalau pernah tampil di chat — dia bisa menghapus SEMUA aset di akun `rzwe62ed`
 - [ ] Token Vercel dirotasi kalau pernah tampil di chat
+- [ ] Token cron-job.org dirotasi kalau pernah tampil di chat
 
