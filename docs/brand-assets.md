@@ -18,6 +18,24 @@ Logo di `public/` berlatar **transparan** (dipakai di atas latar gelap sidebar).
 Ikon aplikasi diletakkan di atas latar gelap `#0A0A0A` supaya mark putihnya
 kelihatan di tab browser berlatar terang.
 
+## Ukuran tampil di sidebar dashboard
+
+Ukuran logo di sidebar diatur dari CSS (`app/globals.css`), bukan dari ukuran
+berkas:
+
+```css
+.pas-brand-mark    { max-width: 124px; }        /* mark 124 x 84 */
+.pas-brand-mark img { max-height: 84px; }        /* pengaman logo pengganti */
+```
+
+Monogram "JC" rasionya **1.48:1** (lambang berdiri, bukan lockup mendatar) —
+pada lebar 176px tingginya jadi 119px dan memakan hampir seperempat sidebar.
+Bloc brand dibatasi 124px supaya menu masih muat di layar laptop 768px tanpa
+scroll. Di layar pendek (`max-height: 760px`) mark mengecil jadi 96 × 65px.
+
+Kalau logo diganti dengan lambang yang **lebih tinggi**, `max-height` di `<img>`
+yang menahan — bukan `max-width` — jadi rasio barunya nggak bikin sidebar meluber.
+
 ## Kalau logonya diganti
 
 Jangan diedit manual satu per satu — jalankan ulang generator:
