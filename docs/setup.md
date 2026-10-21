@@ -10,7 +10,7 @@ milik JC Apparel sendiri. Semua langkah berurutan — jangan loncat.
 | Service | Status |
 | --- | --- |
 | **Supabase** | ✅ Project **JC APPAREL** sudah dibuat — ref `jvdqphlwulgtssxgpebq`, region `ap-southeast-2` (Sydney), URL `https://jvdqphlwulgtssxgpebq.supabase.co`. Migrasi `0001`–`0012` sudah dijalankan dan tercatat di `public.supabase_migrations`. Signup Auth sudah dimatikan. |
-| **Cloudinary** | ⬜ Belum — buat akun + preset `jc-apparel-signed` (bagian 4) |
+| **Cloudinary** | ✅ Akun **`rzwe62ed`** — preset `ml_default` sudah disetel **signed**, folder `jc-apparel/desain`, format jpg/png/webp, batas 10 MB. Sudah diuji end-to-end (upload signed jalan, tanpa signature ditolak, aset mendarat di folder yang benar). |
 | **Vercel** | ⬜ Belum — import repo, isi env var (bagian 5) |
 | **Fonnte** | ⬜ Belum — token device, diisi dari dashboard → Pengaturan → WhatsApp |
 
@@ -140,9 +140,7 @@ Tanpa Windows (PowerShell):
 
 ## 4. Cloudinary
 
-Cloudinary menyimpan foto desain dan foto work order (WO). Akun **wajib baru**
-untuk JC Apparel — jangan pakai akun toko sebelumnya, karena `CLOUDINARY_API_SECRET`
-kita pegang dan foto tertaut ke database JC Apparel.
+Cloudinary menyimpan foto desain dan foto work order (WO).
 
 ### 4.1 Buat akun & ambil kredensial
 
@@ -152,16 +150,21 @@ kita pegang dan foto tertaut ke database JC Apparel.
    - **API key**
    - **API secret**  ← jangan pernah masuk repo / `NEXT_PUBLIC_*`
 
-### 4.2 Buat upload preset
+### 4.2 Upload preset
+
+> **Status: sudah dibuat.** Preset `ml_default` di akun `rzwe62ed` sudah
+> disetel signed + folder yang benar, dan sudah diuji end-to-end. Kalau kamu
+> bikin preset baru, samakan setting-nya dengan tabel di bawah.
 
 **Settings → Upload → Upload presets → Add upload preset**:
 
 | Setting | Isi | Kenapa |
 | --- | --- | --- |
-| **Preset name** | `jc-apparel-signed` | Nama bebas, tapi harus sama persis dengan `CLOUDINARY_UPLOAD_PRESET` |
+| **Preset name** | `ml_default` | Harus sama persis dengan `CLOUDINARY_UPLOAD_PRESET` |
 | **Signing mode** | **Signed** | **Wajib.** Kalau *Unsigned*, siapa pun yang baca cloud name dari source halaman bisa upload ke akunmu tanpa izin |
 | **Folder** | `jc-apparel/desain` | Harus sama dengan `CLOUDINARY_FOLDER` di `lib/cloudinary.ts` |
 | **Allowed formats** | `jpg, jpeg, png, webp` | Sesuai `ALLOWED_IMAGE_TYPES` di `lib/cloudinary.ts` |
+| **Maximum file size** | `10485760` (10 MB) | Sama dengan `MAX_IMAGE_BYTES` di `lib/cloudinary.ts` |
 | **Access control / Access mode** | **Public** (default) | Foto desain ditampilkan ke customer lewat halaman tracking |
 | **Transformation settings** | **kosongkan** | Transformasi `f_auto,q_auto,w_N` sudah diterapkan saat delivery lewat URL — eager transform di preset cuma menambah tagihan |
 
@@ -169,17 +172,28 @@ kita pegang dan foto tertaut ke database JC Apparel.
 > preset, folder yang diizinkan **harus** memuat `jc-apparel/desain`. Kalau tidak,
 > upload ditolak dengan "folder not allowed" — gejalanya operator cuma lihat
 > "Upload gagal".
+>
+> **Soal batas ukuran.** Ada dua batas, dan bedanya penting:
+> - `MAX_IMAGE_BYTES` = **10 MB** — file apa yang boleh dipilih operator.
+> - `MAX_UPLOAD_BYTES` = **2 MB** — ukuran yang benar-benar **dikirim** ke
+>   Cloudinary, setelah foto dikecilkan di browser (maks 1600px, WebP q0.82).
+>
+> Batas 2 MB itu bukan sekadar POLICY — itu penghematan kredit. Foto asli 6 MB
+> dari HP jadi ~200-400 KB di Cloudinary. Kalau downscale gagal (browser nggak
+> bisa decode), file ASLI yang dikirim, dan app menolak dengan pesan jelas
+> daripada mengirim blob 6 MB. Batas 10 MB di preset Cloudinary cuma
+> penjaga cadangan, supaya Cloudinary nggak menolak file yang memang sah.
 
 ### 4.3 Env var
 
 Isi **enam** variabel ini — dua pasang di antaranya harus bernilai sama:
 
 ```
-CLOUDINARY_CLOUD_NAME          = <cloud name>
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = <cloud name>          ← sama
+CLOUDINARY_CLOUD_NAME          = rzwe62ed
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = rzwe62ed              ← sama
 
-CLOUDINARY_UPLOAD_PRESET       = jc-apparel-signed
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET = jc-apparel-signed ← sama
+CLOUDINARY_UPLOAD_PRESET       = ml_default
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET = ml_default         ← sama
 
 CLOUDINARY_API_KEY             = <api key>
 CLOUDINARY_API_SECRET          = <api secret>
@@ -283,12 +297,14 @@ dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
 - [x] 11 tabel terbentuk, 11 tahap jersey + 6 tahap maklon
 - [x] Signup Supabase Auth dimatikan (`disable_signup = true`)
 - [x] RLS diuji: anon hanya bisa baca `brand` + daftar tahap; 8 tabel operasional 0 baris bocor; insert anon → 401
+- [x] Upload preset Cloudinary `ml_default` mode **Signed**, folder `jc-apparel/desain`, batas 10 MB
+- [x] Cloudinary diuji end-to-end: signed upload → 200, tanpa signature → 400, signature salah → 401, format terlarang → 400, >10 MB → 400, aset mendarat di folder yang benar
+- [x] `tsc --noEmit` dan `next build` bersih
 - [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
 - [ ] 4 secret wajib di-set di Vercel dan **tidak** sama dengan nilai contoh
-- [ ] Upload preset Cloudinary mode **Signed**, folder `jc-apparel/desain`
 - [ ] `APP_URL` = domain produksi
 - [ ] Cron deadline-notif jalan (cek Vercel/cron-job.org log)
-- [ ] `tsc --noEmit` dan `next build` bersih
 - [ ] Logo sudah diganti
 - [ ] Token Supabase (personal access token) dirotasi — token yang dipakai saat setup sudah pernah tampil di chat
+- [ ] Token Cloudinary **API secret** dirotasi kalau pernah tampil di chat — dia bisa menghapus SEMUA aset di akun `rzwe62ed`
 
