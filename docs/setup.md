@@ -11,7 +11,7 @@ milik JC Apparel sendiri. Semua langkah berurutan — jangan loncat.
 | --- | --- |
 | **Supabase** | ✅ Project **JC APPAREL** sudah dibuat — ref `jvdqphlwulgtssxgpebq`, region `ap-southeast-2` (Sydney), URL `https://jvdqphlwulgtssxgpebq.supabase.co`. Migrasi `0001`–`0012` sudah dijalankan dan tercatat di `public.supabase_migrations`. Signup Auth sudah dimatikan. |
 | **Cloudinary** | ✅ Akun **`rzwe62ed`** — preset `ml_default` sudah disetel **signed**, folder `jc-apparel/desain`, format jpg/png/webp, batas 10 MB. Sudah diuji end-to-end (upload signed jalan, tanpa signature ditolak, aset mendarat di folder yang benar). |
-| **Vercel** | ⬜ Belum — import repo, isi env var (bagian 5) |
+| **Vercel** | ✅ **LIVE** di **https://jc-apparel.vercel.app** — project `jc-apparel`, linked ke repo `ersetdigital-sudo/JC` branch `main`, auto-deploy aktif. 14 env var terpasang (production + preview + development). |
 | **Fonnte** | ⬜ Belum — token device, diisi dari dashboard → Pengaturan → WhatsApp |
 
 > ### ⚠️ `NEXT_PUBLIC_*` di-inline saat build
@@ -246,7 +246,7 @@ Kalau upload gagal:
 
 | Field | Isi |
 | --- | --- |
-| URL | `https://<domain-kamu>/api/admin/deadline-notif` |
+| URL | `https://jc-apparel.vercel.app/api/admin/deadline-notif` |
 | Header | `Authorization: Bearer <CRON_SECRET>` |
 | Timezone | `Asia/Jakarta` |
 | Schedule | Every hour |
@@ -300,11 +300,14 @@ dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
 - [x] Upload preset Cloudinary `ml_default` mode **Signed**, folder `jc-apparel/desain`, batas 10 MB
 - [x] Cloudinary diuji end-to-end: signed upload → 200, tanpa signature → 400, signature salah → 401, format terlarang → 400, >10 MB → 400, aset mendarat di folder yang benar
 - [x] `tsc --noEmit` dan `next build` bersih
+- [x] Deploy produksi live di https://jc-apparel.vercel.app, auto-deploy dari `main` aktif
+- [x] Uji produksi: 5 halaman publik 200, login 200 / password salah 401, dashboard admin 200, upload Cloudinary signed 200, 4 endpoint tanpa kredensial → 401
 - [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
-- [ ] 4 secret wajib di-set di Vercel dan **tidak** sama dengan nilai contoh
-- [ ] `APP_URL` = domain produksi
-- [ ] Cron deadline-notif jalan (cek Vercel/cron-job.org log)
+- [ ] 4 secret wajib sudah di-set di Vercel — **rotasi setelah installs selesai**
+- [ ] Cron deadline-notif dibuat di cron-job.org (URL di bagian 5) **dan** dinyalakan dari dashboard → Pengaturan → Notifikasi Deadline
+- [ ] Token Fonnte diisi dari dashboard → Pengaturan → WhatsApp
 - [ ] Logo sudah diganti
 - [ ] Token Supabase (personal access token) dirotasi — token yang dipakai saat setup sudah pernah tampil di chat
 - [ ] Token Cloudinary **API secret** dirotasi kalau pernah tampil di chat — dia bisa menghapus SEMUA aset di akun `rzwe62ed`
+- [ ] Token Vercel dirotasi kalau pernah tampil di chat
 

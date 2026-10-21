@@ -143,7 +143,7 @@ Claims are cheap, so these were checked against the live project rather than ass
 | Signed upload with a valid session | `200`, asset landed in the intended folder |
 | Upload with a forged signature | `401` from Cloudinary — the signature is genuinely enforced |
 | `tsc --noEmit` and `next build` | clean |
-| Production deploy (`jcapparel.vercel.app`) | `/`, `/login`, `/track`, `/status` all return `200` |
+| Production deploy (`jc-apparel.vercel.app`) | `/`, `/login`, `/track`, `/status` all return `200` |
 | Dashboard API without a session | `401` |
 | Cron endpoint without the secret | `401` |
 | Signed upload grant in production | `200` with a session, `401` without |
@@ -192,7 +192,7 @@ the signing endpoint; leaving it unsigned would reopen the upload path.
 
 **Scheduling.** `vercel.json` carries no `crons` block — the deadline reminder is driven
 by cron-job.org instead: one job, GET
-`https://jcapparel.vercel.app/api/admin/deadline-notif`, custom header
+`https://jc-apparel.vercel.app/api/admin/deadline-notif`, custom header
 `Authorization: Bearer <CRON_SECRET>` (same value as the Vercel env var), timezone
 Asia/Jakarta, **every hour**. Hourly rather than once a day is deliberate: the admin panel
 lets the operator pick any "Jam Kirim (WIB)", and the route decides on every run — it
@@ -202,7 +202,7 @@ never send twice. A single fixed daily job would silently skip any hour set afte
 
 ## Status
 
-The platform covers operations only — no storefront, no catalogue — so the data model stays as small as the work it supports. Freshly provisioned on its own Supabase project and migrations, with the checks above passing. Live at **[jcapparel.vercel.app](https://jcapparel.vercel.app)**, redeployed on every push to `main`.
+The platform covers operations only — no storefront, no catalogue — so the data model stays as small as the work it supports. Freshly provisioned on its own Supabase project and migrations, with the checks above passing. Live at **[jc-apparel.vercel.app](https://jc-apparel.vercel.app)**, redeployed on every push to `main`.
 
 ## Author
 
