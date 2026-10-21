@@ -123,6 +123,24 @@ def make_mark(path):
     print("wrote", path, img.size)
 
 
+def make_master(path):
+    """Logo master untuk mockup desain: kanvas persegi putih, lockup di tengah."""
+    S = 1254
+    canvas = Image.new("RGB", (S, S), (255, 255, 255))
+
+    lock = Image.open(os.path.join(PUBLIC, "brand-logo-jc.png")).convert("RGBA")
+    # Lockup asli 900x384. Skala ke lebar 1000 (margin 127px di kiri & kanan),
+    # lalu tinggi mengikuti rasio aslinya.
+    target_w = 1000
+    target_h = round(lock.height * target_w / lock.width)
+    lock = lock.resize((target_w, target_h), Image.LANCZOS)
+    canvas.paste(lock, ((S - lock.width) // 2, (S - lock.height) // 2), lock)
+
+    canvas.save(path)
+    print("wrote", path, canvas.size)
+
+
 if __name__ == "__main__":
     make_lockup(os.path.join(PUBLIC, "brand-logo-jc.png"))
     make_mark(os.path.join(PUBLIC, "logo-jc-mark.png"))
+    make_master(os.path.join(ROOT, "docs", "design", "logo-master.png"))
