@@ -22,7 +22,7 @@ export async function GET() {
     .single();
 
   return NextResponse.json({
-    name: brand?.name || "TAFF Sportwear",
+    name: brand?.name || "JC Apparel",
     whatsapp_number: brand?.whatsapp_number || "",
     jam_operasional: opHours?.value || "Senin–Sabtu · 09.00–17.00 WIB",
   });
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
   const { error: brandErr } = await supabase
     .from("brand")
-    .update({ name: name || "TAFF Sportwear", whatsapp_number: whatsapp_number || "" })
+    .update({ name: name || "JC Apparel", whatsapp_number: whatsapp_number || "" })
     .eq("id", 1);
 
   if (brandErr) {

@@ -21,8 +21,8 @@ import {
   setUploadPercent,
 } from "@/lib/upload-progress";
 
-/** Folder induk semua aset gambar TAFF Sportwear di Cloudinary. */
-export const CLOUDINARY_FOLDER = "taff-sportwear/desain";
+/** Folder induk semua aset gambar JC Apparel di Cloudinary. */
+export const CLOUDINARY_FOLDER = "jc-apparel/desain";
 
 /** Batas ukuran BERKAS ASLI yang boleh dipilih operator.
  *

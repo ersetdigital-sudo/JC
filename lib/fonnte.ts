@@ -81,7 +81,7 @@ export function buildWhatsAppMessage(
       // tidak meneruskannya ke grup/umum (lihat lib/track-guard.ts).
       "Catatan: link ini khusus untuk Kakak, mohon tidak dibagikan ke grup/umum ya.",
       "",
-      "Terima kasih sudah mempercayakan pesanan Kakak kepada TAFF Sportwear.",
+      "Terima kasih sudah mempercayakan pesanan Kakak kepada JC Apparel.",
     ].join("\n");
   }
 
@@ -105,7 +105,7 @@ export function buildWhatsAppMessage(
       // tidak meneruskannya ke grup/umum (lihat lib/track-guard.ts).
       "Catatan: link ini khusus untuk Kakak, mohon tidak dibagikan ke grup/umum ya.",
       "",
-      "Terima kasih sudah mempercayakan pesanan Kakak kepada TAFF Sportwear.",
+      "Terima kasih sudah mempercayakan pesanan Kakak kepada JC Apparel.",
     ].join("\n");
 }
 
@@ -136,7 +136,7 @@ export function buildMaklonWhatsAppMessage(
       // tidak meneruskannya ke grup/umum (lihat lib/track-guard.ts).
       "Catatan: link ini khusus untuk Kakak, mohon tidak dibagikan ke grup/umum ya.",
       "",
-      "Terima kasih sudah mempercayakan pesanan Kakak kepada TAFF Sportwear.",
+      "Terima kasih sudah mempercayakan pesanan Kakak kepada JC Apparel.",
     ].join("\n");
   }
 
@@ -160,7 +160,7 @@ export function buildMaklonWhatsAppMessage(
     // tidak meneruskannya ke grup/umum (lihat lib/track-guard.ts).
     "Catatan: link ini khusus untuk Kakak, mohon tidak dibagikan ke grup/umum ya.",
     "",
-    "Terima kasih sudah mempercayakan pesanan Kakak kepada TAFF Sportwear.",
+    "Terima kasih sudah mempercayakan pesanan Kakak kepada JC Apparel.",
   ].join("\n");
 }
 

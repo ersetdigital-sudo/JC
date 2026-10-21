@@ -5,7 +5,7 @@ import { TrackDetailClient } from "./TrackDetailClient";
 
 export const metadata: Metadata = {
   title: "Lacak Pesanan",
-  description: "Lacak progres pesanan jersey custom TAFF Sportwear",
+  description: "Lacak progres pesanan jersey custom JC Apparel",
 };
 
 interface TrackDetailPageProps {

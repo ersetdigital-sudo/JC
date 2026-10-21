@@ -183,8 +183,8 @@ export default function StatusClient({
   // Fetch order data on mount — always try fresh from DB via session token
   useEffect(() => {
     if (!orderId) return;
-    const key = `taff_verified_${orderId}`;
-    const tokenKey = `taff_token_${orderId}`;
+    const key = `jc_verified_${orderId}`;
+    const tokenKey = `jc_token_${orderId}`;
 
     // Token dari link WhatsApp (HMAC, 30 hari) → simpan & langsung akses,
     // tanpa modal verifikasi HP. Kalau token invalid/expired, fetch di bawah
@@ -402,13 +402,13 @@ export default function StatusClient({
       // Token hasil verifikasi berlaku 30 hari → "ingat perangkat ini".
       if (data.token) {
         try {
-          localStorage.setItem(`taff_token_${orderId}`, data.token);
+          localStorage.setItem(`jc_token_${orderId}`, data.token);
         } catch {
           /* localStorage diblokir — sessionStorage di bawah jadi cadangan */
         }
-        sessionStorage.setItem(`taff_token_${orderId}`, data.token);
+        sessionStorage.setItem(`jc_token_${orderId}`, data.token);
       }
-      sessionStorage.setItem(`taff_verified_${orderId}`, JSON.stringify(data));
+      sessionStorage.setItem(`jc_verified_${orderId}`, JSON.stringify(data));
       setOrder(data.order);
       setHistory(data.history);
       setLoaded(true);
@@ -458,7 +458,7 @@ export default function StatusClient({
                   </svg>
                 </a>
                 <div className="leading-none">
-                  <p className="trk-stencil text-[9px] text-[#A3A3A3]">TAFF Sportwear</p>
+                  <p className="trk-stencil text-[9px] text-[#A3A3A3]">JC Apparel</p>
                   <p className="trk-display text-[15px] mt-1">Detail Progres Pesanan</p>
                 </div>
               </div>
@@ -607,16 +607,16 @@ export default function StatusClient({
   className="shrink-0"
   aria-label="Kembali ke tracking"
 >
-  {/* Mark saja (tanpa wordmark), karena teks TAFF Sportwear sudah ada di sampingnya */}
+  {/* Mark saja (tanpa wordmark), karena teks JC Apparel sudah ada di sampingnya */}
   <img
-    src="/logo-taff-mark.png"
+    src="/logo-jc-mark.png"
     alt=""
     aria-hidden="true"
     className="h-8 w-auto"
   />
 </a>
                 <div className="leading-tight">
-                  <p className="trk-display text-[14.5px] font-semibold uppercase tracking-wide sm:text-[15px]">TAFF Sportwear</p>
+                  <p className="trk-display text-[14.5px] font-semibold uppercase tracking-wide sm:text-[15px]">JC Apparel</p>
                   <p className="text-[10.5px] text-[#8A8A85] sm:text-[11px]">Pabrik Jersey Custom Full Printing</p>
                 </div>
               </div>
@@ -1027,7 +1027,7 @@ export default function StatusClient({
             )}
 
             <footer className="mt-10 text-center text-[12px] text-[#8A8A85]">
-              <p>© 2026 TAFF Sportwear — Pabrik Jersey Custom Full Printing</p>
+              <p>© 2026 JC Apparel — Pabrik Jersey Custom Full Printing</p>
             </footer>
           </main>
 

@@ -6,7 +6,7 @@ import { getBrand } from "@/lib/queries";
 import "./globals.css";
 
 /**
- * Font — Archivo (satu keluarga untuk teks & display, sesuai brand TAFF Sportwear).
+ * Font — Archivo (satu keluarga untuk teks & display, sesuai brand JC Apparel).
  * Berkasnya diambil dari folder `fonts/` di root repo, jadi tidak ada request ke
  * Google Fonts saat build maupun saat halaman dibuka.
  */
@@ -25,7 +25,7 @@ const archivo = localFont({
 });
 
 /**
- * JetBrains Mono — khusus nomor pesanan & label stencil seperti di mockup TAFF
+ * JetBrains Mono — khusus nomor pesanan & label stencil seperti di mockup JC
  * (contoh: TNT260929YXUZ). Dikonsumsi lewat --font-mono di globals.css.
  * Berkas variable font-nya ikut di repo, sama seperti Archivo: build tidak
  * pernah menyentuh Google Fonts, jadi build di CI/Vercel tidak bisa gagal

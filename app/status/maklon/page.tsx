@@ -32,7 +32,7 @@ import {
  */
 
 export const metadata: Metadata = {
-  title: "Status Pesanan Maklon — TAFF Sportwear",
+  title: "Status Pesanan Maklon — JC Apparel",
   description: "Pantau progres produksi pesanan maklon kamu.",
   robots: { index: false, follow: false },
 };
@@ -144,9 +144,9 @@ function Shell({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-3">
                 <a href="/track" className="shrink-0" aria-label="Kembali ke tracking">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {/* Mark saja (tanpa wordmark), karena teks TAFF Sportwear ada di sampingnya */}
+                  {/* Mark saja (tanpa wordmark), karena teks JC Apparel ada di sampingnya */}
                   <img
-                    src="/logo-taff-mark.png"
+                    src="/logo-jc-mark.png"
                     alt=""
                     aria-hidden="true"
                     className="h-8 w-auto"
@@ -154,7 +154,7 @@ function Shell({ children }: { children: React.ReactNode }) {
                 </a>
                 <div className="leading-tight">
                   <p className="trk-display text-[14.5px] font-semibold uppercase tracking-wide sm:text-[15px]">
-                    TAFF Sportwear
+                    JC Apparel
                   </p>
                   <p className="text-[10.5px] text-[#8A8A85] sm:text-[11px]">
                     Pabrik Jersey Custom Full Printing

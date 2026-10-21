@@ -72,7 +72,7 @@ export default async function HomePage() {
                   setiap halaman. Nama toko tetap dirender sebagai teks di
                   sampingnya supaya ikut berubah dari menu Pengaturan. */}
               <Image
-                src="/logo-taff-mark.png"
+                src="/logo-jc-mark.png"
                 alt=""
                 aria-hidden="true"
                 width={192}

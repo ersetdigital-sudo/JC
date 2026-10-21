@@ -6,7 +6,7 @@
  * maklon bisa diprediksi. Sekarang keduanya memakai fungsi di sini.
  *
  * Format: `<PREFIX><YYMMDD><4 karakter acak>`
- *   TAFF260921K4XQ     → pesanan jersey
+ *   JC260921K4XQ      → pesanan jersey
  *   MKL260921K4XQ     → pesanan maklon
  *
  * Charset membuang karakter yang sering salah ketik pelanggan
@@ -21,19 +21,20 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 /** Charset aman: tanpa B, I, O, L, 0, 1. */
 export const ORDER_NUMBER_CHARSET = "ACDEFGHJKMNPQRSTUVWXYZ23456789";
 
-export const ORDER_NUMBER_PREFIX = "TAFF";
+export const ORDER_NUMBER_PREFIX = "JC";
 export const MAKLON_NUMBER_PREFIX = "MKL";
 
 /**
  * Prefix lama yang tetap harus dikenali saat memvalidasi nomor.
  *
  * Nomor yang sudah beredar — dikirim ke pelanggan lewat WhatsApp dan tersimpan
- * di tabel `orders` — memakai prefix `MENARA` — dan `VSP` setelah rename ke TAFF. Kalau prefix baru saja yang
+ * di tabel `orders` — memakai prefix `MENARA` — lalu `VSP` — lalu `TAFF` (setelah
+ * rename sebelumnya). Kalau prefix baru saja yang
  * diizinkan regex, pesanan lama itu jadi tidak bisa dilacak sama sekali.
  * Jadi prefix baru dipakai untuk nomor yang baru dibuat, sedangkan yang lama
  * tetap diterima.
  */
-export const LEGACY_ORDER_NUMBER_PREFIXES = ["MENARA", "VSP"];
+export const LEGACY_ORDER_NUMBER_PREFIXES = ["MENARA", "VSP", "TAFF"];
 
 /** Panjang bagian acak. */
 const CODE_LENGTH = 4;
@@ -41,18 +42,29 @@ const CODE_LENGTH = 4;
 /** Berapa kali coba ulang bila nomor hasil generate sudah terpakai. */
 const MAX_ATTEMPTS = 5;
 
+/** Semua prefix yang sah: jersey (baru + legacy) dan maklon. */
+const ALL_PREFIXES = [
+  ORDER_NUMBER_PREFIX,
+  MAKLON_NUMBER_PREFIX,
+  ...LEGACY_ORDER_NUMBER_PREFIXES,
+];
+
 /**
  * Validasi format nomor pesanan.
  *
  * Dua bentuk diterima:
  * - sekarang: `<PREFIX><YYMMDD><4 karakter>` (prefix baru + MKL untuk maklon)
- * - lama: `<PREFIX>-<YYMMDD>-<3 digit>` — termasuk prefix lama MENARA, supaya
- *   pesanan yang dibuat sebelum rebrand masih bisa dicari di halaman tracking.
+ * - lama: `<PREFIX>-<YYMMDD>-<3 digit>` — supaya pesanan yang dibuat sebelum
+ *   rebrand masih bisa dicari di halaman tracking.
+ *
+ * Prefix legacy (`MENARA`, `VSP`, `TAFF`) sengaja diterima di KEDUA bentuk.
+ * Nomor `TAFF260907K4XQ` pernah dikirim ke pelanggan lewat WhatsApp, jadi
+ * harus tetap lolos validasi format — bukan cuma yang bentuknya pakai tanda
+ * hubung.
  */
-const JERSEY_PREFIXES = [ORDER_NUMBER_PREFIX, ...LEGACY_ORDER_NUMBER_PREFIXES];
 
 export const ORDER_NUMBER_REGEX = new RegExp(
-  `^(${ORDER_NUMBER_PREFIX}|${MAKLON_NUMBER_PREFIX})\\d{6}[${ORDER_NUMBER_CHARSET}]{${CODE_LENGTH}}$|^(${JERSEY_PREFIXES.join("|")})-\\d{6}-\\d{3}$`
+  `^(${ALL_PREFIXES.join("|")})\\d{6}[${ORDER_NUMBER_CHARSET}]{${CODE_LENGTH}}$|^(${ALL_PREFIXES.join("|")})-\\d{6}-\\d{3}$`
 );
 
 /** Tabel yang dicek saat memastikan nomor belum terpakai. */
@@ -87,7 +99,7 @@ function randomCode(length = CODE_LENGTH): string {
 export interface GenerateOrderNumberOptions {
   /** Tabel untuk pengecekan bentrok. Default `orders`. */
   table?: OrderNumberTable;
-  /** Prefix nomor. Default `TAFF`. */
+  /** Prefix nomor. Default `JC`. */
   prefix?: string;
   /** Tanggal acuan (untuk pengujian). Default sekarang. */
   date?: Date;

@@ -549,10 +549,10 @@ export default function PesananDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo.png" alt="TAFF Sportwear" />
+            <img src="/brand-logo-jc.png" alt="JC Apparel" />
           </span>
           <span className="block text-center">
-            <span className="pas-brand-name">TAFF Sportwear</span>
+            <span className="pas-brand-name">JC Apparel</span>
             <span className="pas-brand-sub">Admin Panel</span>
           </span>
         </a>
@@ -607,9 +607,9 @@ export default function PesananDashboard({
         <div className="pas-userbox mt-auto p-3 flex items-center gap-3">
           <span className="pas-avatar pas-avatar-invert">AD</span>
           <span className="leading-tight">
-            <span className="block text-[13.5px] font-semibold">Admin TAFF</span>
+            <span className="block text-[13.5px] font-semibold">Admin JC</span>
             <span className="block text-[11.5px] opacity-70">
-              admin@taffsport.id
+              admin@jcapparel.id
             </span>
           </span>
         </div>
@@ -707,8 +707,8 @@ export default function PesananDashboard({
           {/* Drawer header — satu-satunya tempat logo brand muncul di ponsel */}
           <div className="flex items-center mb-2 pr-8">
             <a href="/" className="flex flex-col gap-2 min-w-0">
-              <img src="/brand-logo.png" alt="TAFF Sportwear" className="h-10 w-auto max-w-[150px] object-contain object-left" />
-              <span className="pas-brand-name !text-[15px]">TAFF Sportwear</span>
+              <img src="/brand-logo-jc.png" alt="JC Apparel" className="h-10 w-auto max-w-[150px] object-contain object-left" />
+              <span className="pas-brand-name !text-[15px]">JC Apparel</span>
             </a>
           </div>
           <p className="pas-navsec">Operasional</p>
@@ -761,8 +761,8 @@ export default function PesananDashboard({
           <div className="pas-userbox mt-6 p-3 flex items-center gap-3">
             <span className="pas-avatar pas-avatar-invert">AD</span>
             <span className="leading-tight min-w-0">
-              <span className="block text-[13.5px] font-semibold truncate">Admin TAFF</span>
-              <span className="block text-[11.5px] opacity-70 truncate">admin@taffsport.id</span>
+              <span className="block text-[13.5px] font-semibold truncate">Admin JC</span>
+              <span className="block text-[11.5px] opacity-70 truncate">admin@jcapparel.id</span>
             </span>
           </div>
           <button
@@ -2632,7 +2632,7 @@ function ViewSetting({
   const [testingFonnte, setTestingFonnte] = useState(false);
 
   // Profil Toko
-  const [tokoName, setTokoName] = useState("TAFF Sportwear");
+  const [tokoName, setTokoName] = useState("JC Apparel");
   const [tokoWhatsapp, setTokoWhatsapp] = useState("");
   const [tokoJamOps, setTokoJamOps] = useState("Senin-Sabtu - 09.00-17.00 WIB");
   const [savingToko, setSavingToko] = useState(false);
@@ -2655,7 +2655,7 @@ function ViewSetting({
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (d) {
-          setTokoName(d.name || "TAFF Sportwear");
+          setTokoName(d.name || "JC Apparel");
           setTokoWhatsapp(d.whatsapp_number || "");
           setTokoJamOps(d.jam_operasional || "Senin-Sabtu - 09.00-17.00 WIB");
         }
@@ -5019,7 +5019,7 @@ function AddForm({
         <p className="pas-stencil text-[9px] text-[var(--pas-muted)]">Nomor Pesanan</p>
         <p className="text-[14px] mt-1 text-[var(--pas-muted)] leading-relaxed">
           Nomor order digenerate otomatis saat disimpan
-          <span className="text-[var(--pas-muted)]"> (format: TAFFYYMMDDXXXX)</span>
+          <span className="text-[var(--pas-muted)]"> (format: JCYYMMDDXXXX)</span>
         </p>
       </div>
       <label className="block">

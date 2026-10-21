@@ -4,7 +4,7 @@ import { loadMaklonOrders, type MaklonDashboardOrder } from "@/lib/maklon-orders
 
 export const metadata = {
   // Lihat catatan di app/pesanan/orders/page.tsx soal title absolute.
-  title: { absolute: "Maklon · TAFF Sportwear" },
+  title: { absolute: "Maklon · JC Apparel" },
   description: "Dashboard admin kelola pesanan maklon",
 };
 

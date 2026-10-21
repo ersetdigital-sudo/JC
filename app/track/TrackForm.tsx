@@ -54,7 +54,7 @@ export default function TrackForm({
 
       if (!res.ok) {
         showErr(
-          "Nomor pesanan tidak ditemukan. Cek lagi formatnya (contoh: TAFF260907K4XQ) atau hubungi admin."
+          "Nomor pesanan tidak ditemukan. Cek lagi formatnya (contoh: JC260907K4XQ) atau hubungi admin."
         );
         setLoading(false);
         return;
@@ -69,9 +69,9 @@ export default function TrackForm({
 
       // Store token separately for session header auth
       if (data.token) {
-        sessionStorage.setItem(`taff_token_${id}`, data.token);
+        sessionStorage.setItem(`jc_token_${id}`, data.token);
       }
-      sessionStorage.setItem(`taff_verified_${id}`, JSON.stringify(data));
+      sessionStorage.setItem(`jc_verified_${id}`, JSON.stringify(data));
       router.push(`/status?order=${encodeURIComponent(id)}`);
     } catch {
       showErr("Terjadi kesalahan. Coba lagi.");
@@ -86,16 +86,16 @@ export default function TrackForm({
           {/* nav */}
           <header className="max-w-6xl mx-auto px-5 sm:px-8 py-5 flex items-center justify-between">
             <a href="/" className="flex items-center gap-3">
-{/* Mark saja (tanpa wordmark), karena teks TAFF Sportwear sudah ada di sampingnya */}
+{/* Mark saja (tanpa wordmark), karena teks JC Apparel sudah ada di sampingnya */}
                 <img
-                  src="/logo-taff-mark.png"
+                  src="/logo-jc-mark.png"
                   alt=""
                   aria-hidden="true"
                   className="h-10 w-auto"
                 />
               <span className="leading-none">
                 <span className="block trk-display text-[15px] tracking-tight">
-                  TAFF Sportwear
+                  JC Apparel
                 </span>
                 <span className="block trk-stencil text-[9px] text-[#A3A3A3] mt-[3px]">
                   Custom Apparel
@@ -149,7 +149,7 @@ export default function TrackForm({
                         setOrderNumber(e.target.value);
                         clearErr();
                       }}
-                      placeholder="TAFF260907K4XQ"
+                      placeholder="JC260907K4XQ"
                       autoComplete="off"
                       className="trk-field w-full mt-2 px-4 py-3.5 text-[16px] tracking-wide"
                     />
@@ -268,10 +268,10 @@ export default function TrackForm({
             <div className="max-w-6xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
               <div className="flex flex-col">
                 <p className="text-[13px] text-[#A3A3A3]">
-                  © 2026 TAFF Sportwear — Custom Jersey &amp; Sportswear
+                  © 2026 JC Apparel — Custom Jersey &amp; Sportswear
                 </p>
                 <p className="trk-stencil text-[9px] text-[#8A8A85] mt-0.5">
-                  taffsport.id
+                  jcapparel.id
                 </p>
               </div>
               <div className="flex flex-col sm:items-end gap-1 text-[13px] text-[#8A8A85]">

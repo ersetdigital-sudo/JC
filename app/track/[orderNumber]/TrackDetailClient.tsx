@@ -217,7 +217,7 @@ function OrderDetailView({
         <div className="max-w-lg mx-auto">
           <div className="flex items-center gap-sm mb-4">
             <Package className="w-5 h-5" />
-            <span className="text-button-sm opacity-80">TAFF Sportwear</span>
+            <span className="text-button-sm opacity-80">JC Apparel</span>
           </div>
           <h1 className="text-heading-md font-bold">Pesanan {orderNumber}</h1>
           <p className="text-body-sm opacity-80 mt-1">{order.customer_name}</p>

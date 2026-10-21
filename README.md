@@ -1,6 +1,6 @@
 <div align="center">
 
-# TAFF Sportwear
+# JC Apparel
 
 **Production operations platform for a custom jersey manufacturer.**
 
@@ -18,7 +18,7 @@ Order intake → 11-stage production pipeline → automated WhatsApp updates →
 
 ## The problem
 
-TAFF Sportwear produces custom full-printing jerseys. Every order passes through eleven production stages across different workstations — design, layout, colour proofing, printing, press transfer, cutting, sewing, finishing, QC, packing, shipping.
+JC Apparel produces custom full-printing jerseys. Every order passes through eleven production stages across different workstations — design, layout, colour proofing, printing, press transfer, cutting, sewing, finishing, QC, packing, shipping.
 
 Before this platform, keeping customers informed meant someone pausing work to answer *"how far along is my order?"* on WhatsApp. Order status lived in the operator's head; the customer had no way to check it themselves.
 
@@ -41,6 +41,14 @@ This platform turns that flow into a tracked, self-reporting pipeline: the momen
 | **Customer tracking** | Customers check progress themselves with order number + phone, or through a signed link sent over WhatsApp. No login, no phone call. |
 | **Reports** | Average production turnaround, derived from the recorded stage history rather than a manually maintained sheet. |
 | **Settings** | Shop profile, WhatsApp gateway token, reminder schedule and monthly capacity — all editable from the dashboard. |
+
+## Branding
+
+The shop identity lives in the `brand` table — name, monogram, tagline, description, WhatsApp number and logo path are read at request time, so the operator can change them from **Settings → Shop Profile** without a redeploy. `lib/data.ts` holds a fallback used only when the database is unreachable.
+
+The logo itself is two files in `public/`: `brand-logo-jc.png` (the horizontal lockup, 900×384) and `logo-jc-mark.png` (the monogram mark, 128×128). Both are currently placeholders — swap in the real artwork. Because assets under `public/` are served with `Cache-Control: immutable, max-age=31536000`, replacing a file in place will not be visible for a year; rename the file and update its path instead. Full instructions, the palette and every place the brand name is hardcoded are in [`docs/brand-assets.md`](docs/brand-assets.md).
+
+Order numbers moved from the `TAFF` prefix to `JC` with this rebrand. The old prefixes (`TAFF`, `VSP`, `MENARA`) are still accepted by the tracking page, so links already sent to customers keep resolving.
 
 ## Architecture
 
@@ -99,7 +107,7 @@ A few parts that were genuinely interesting to get right.
 
 **Photos are never stored at camera resolution.** The billed unit here is not requests, it's stored bytes plus delivery bandwidth plus derived transformations. A phone photo is routinely 4000 px and 2 MB, while the largest place this app ever shows a photo is a 1600 px lightbox — every pixel above that is paid for forever and never looked at. So the browser downsizes to a 1600 px long edge and re-encodes to JPEG q0.82 *before* the upload, which lands a photo around 200–400 KB: roughly a 5–8× reduction in stored bytes, with no visible difference at the sizes the app actually displays. The helper is deliberately pessimistic — it falls back to the original file if the browser can't decode, if the image is already small enough, or if the re-encode didn't actually save bytes. PNG stays PNG, because jersey mockups often carry transparency and a JPEG re-encode would turn those areas black. EXIF orientation is honoured so phone photos don't come back rotated.
 
-**Order numbers that survive being read aloud.** `TAFF` + `YYMMDD` + four characters drawn from a CSPRNG, with the ambiguous characters `B I O L 0 1` removed from the alphabet. Uniqueness is checked against the database with retry, because customers read these numbers over the phone. Numbers minted before the rename (`MENARA…`) and under the previous prefix (`VSP…`) both still resolve on the tracking page, so links already sent to customers keep working.
+**Order numbers that survive being read aloud.** `JC` + `YYMMDD` + four characters drawn from a CSPRNG, with the ambiguous characters `B I O L 0 1` removed from the alphabet. Uniqueness is checked against the database with retry, because customers read these numbers over the phone. Numbers minted before the rename (`MENARA…`) and under the previous prefixes (`VSP…`, `TAFF…`) both still resolve on the tracking page, so links already sent to customers keep working.
 
 **Theming as a one-file change.** Every colour and font in the product is a CSS variable in `app/globals.css` (`:root` plus a `.dark` override) that `tailwind.config.ts` reads from. Rebranding the whole application — palette, typeface, logo, order-number prefix — is a change to that token block plus the logo files, not a hunt through hundreds of components.
 
@@ -122,16 +130,20 @@ Worth calling out, because an earlier version of this platform had a serious fla
 
 Claims are cheap, so these were checked against the live project rather than assumed:
 
+> The checks below were run against the previous deployment. After the JC Apparel
+> rebrand, re-run them against your own deployment — the deployment target and the
+> Supabase project are now yours to provision.
+
 | Check | Result |
 |---|---|
-| Migrations `0001`–`0010` applied to a fresh database | 11 tables created, versions recorded in `supabase_migrations` |
+| Migrations `0001`–`0012` applied to a fresh database | 11 tables created, versions recorded in `supabase_migrations` |
 | Anon key reads the public brand row | `200` — intended, this is the shop identity the status pages need |
 | Anon key writes a fabricated order | `401` — `new row violates row-level security policy for table "orders"` |
 | Signed upload without a session | `401` from the sign endpoint |
 | Signed upload with a valid session | `200`, asset landed in the intended folder |
 | Upload with a forged signature | `401` from Cloudinary — the signature is genuinely enforced |
 | `tsc --noEmit` and `next build` | clean |
-| Production deploy (`taffsport.vercel.app`) | `/`, `/login`, `/track`, `/status` all return `200` |
+| Production deploy (`jcapparel.vercel.app`) | `/`, `/login`, `/track`, `/status` all return `200` |
 | Dashboard API without a session | `401` |
 | Cron endpoint without the secret | `401` |
 | Signed upload grant in production | `200` with a session, `401` without |
@@ -156,7 +168,7 @@ project. `.env.local.example` lists every variable with a note on what it is for
 ```bash
 pnpm install
 cp .env.local.example .env.local   # then fill in the values
-# run migrations 0001 → 0010 in the Supabase SQL editor
+# run migrations 0001 → 0012 in the Supabase SQL editor
 pnpm dev
 ```
 
@@ -176,7 +188,7 @@ the signing endpoint; leaving it unsigned would reopen the upload path.
 
 **Scheduling.** `vercel.json` carries no `crons` block — the deadline reminder is driven
 by cron-job.org instead: one job, GET
-`https://taffsport.vercel.app/api/admin/deadline-notif`, custom header
+`https://jcapparel.vercel.app/api/admin/deadline-notif`, custom header
 `Authorization: Bearer <CRON_SECRET>` (same value as the Vercel env var), timezone
 Asia/Jakarta, **every hour**. Hourly rather than once a day is deliberate: the admin panel
 lets the operator pick any "Jam Kirim (WIB)", and the route decides on every run — it
@@ -186,7 +198,7 @@ never send twice. A single fixed daily job would silently skip any hour set afte
 
 ## Status
 
-The platform covers operations only — no storefront, no catalogue — so the data model stays as small as the work it supports. Freshly provisioned on its own Supabase project and migrations, with the checks above passing. Live at **[taffsport.vercel.app](https://taffsport.vercel.app)**, redeployed on every push to `main`.
+The platform covers operations only — no storefront, no catalogue — so the data model stays as small as the work it supports. Freshly provisioned on its own Supabase project and migrations, with the checks above passing. Live at **[jcapparel.vercel.app](https://jcapparel.vercel.app)**, redeployed on every push to `main`.
 
 ## Author
 

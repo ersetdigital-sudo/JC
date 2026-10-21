@@ -8,7 +8,7 @@ import StatusClient from "./StatusClient";
 
 export const metadata: Metadata = {
   title: "Status Pesanan",
-  description: "Pantau progres produksi pesanan jersey custom TAFF Sportwear.",
+  description: "Pantau progres produksi pesanan jersey custom JC Apparel.",
 };
 
 // Dibaca per request: token ada di query/cookie, jadi halaman ini tidak bisa

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Audit kontras WCAG 2.1 (AA) untuk pasangan warna yang dipakai TAFF Sportwear.
+ * Audit kontras WCAG 2.1 (AA) untuk pasangan warna yang dipakai JC Apparel.
  * Jalankan: node scripts/contrast-audit.mjs
  * Threshold: 4.5 untuk teks normal (ukuran kecil), 3.0 untuk teks besar / ikon.
  * Kebijakan: semua teks tombol putih di atas latar gelap (deep blue / steel),

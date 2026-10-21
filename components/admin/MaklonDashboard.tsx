@@ -273,10 +273,10 @@ export default function MaklonDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo.png" alt="TAFF Sportwear" />
+            <img src="/brand-logo-jc.png" alt="JC Apparel" />
           </span>
           <span className="block text-center">
-            <span className="pas-brand-name">TAFF Sportwear</span>
+            <span className="pas-brand-name">JC Apparel</span>
             <span className="pas-brand-sub">Admin Panel</span>
           </span>
         </a>
@@ -316,8 +316,8 @@ export default function MaklonDashboard({
         <div className="pas-userbox mt-auto p-3 flex items-center gap-3">
           <span className="pas-avatar pas-avatar-invert">AD</span>
           <span className="leading-tight">
-            <span className="block text-[13.5px] font-semibold">Admin TAFF</span>
-            <span className="block text-[11.5px] opacity-70">admin@taffsport.id</span>
+            <span className="block text-[13.5px] font-semibold">Admin JC</span>
+            <span className="block text-[11.5px] opacity-70">admin@jcapparel.id</span>
           </span>
         </div>
       </aside>

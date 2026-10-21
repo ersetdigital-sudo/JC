@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Tailwind config — TAFF Sportwear design system.
+ * Tailwind config — JC Apparel design system.
  * Colors map to CSS variables in app/globals.css (light) overridden
  * under .dark. Shadows + glass utilities also read from CSS vars so
  * theme switching is automatic.

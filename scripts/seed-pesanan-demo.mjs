@@ -11,7 +11,7 @@
  *
  * Nomor order ditulis tangan, bukan lewat generateOrderNumber(), supaya skrip
  * ini tidak menyeret lib TypeScript ke Node dan supaya nomornya stabil (bisa
- * dipakai berulang di demo/README). Formatnya tetap sama: TAFF + YYMMDD + 4
+ * dipakai berulang di demo/README). Formatnya tetap sama: JC + YYMMDD + 4
  * karakter dari charset aman — lihat lib/order-number.ts.
  */
 import { createClient } from "@supabase/supabase-js";
@@ -74,7 +74,7 @@ const items = (name, sizes) => [
 const seeds = [
   {
     order: {
-      order_number: "TAFF260930K4XQ",
+      order_number: "JC260930K4XQ",
       customer_name: `${DEMO_PREFIX}Komunitas Gowes Jogja`,
       customer_phone: "081234567901",
       customer_city: "Yogyakarta",
@@ -88,8 +88,8 @@ const seeds = [
         "[DEMO] Layout sudah di-acc customer, sekarang masuk cetak. Warna dasar masih menunggu konfirmasi sponsor.",
       current_status: "cetak_print",
       current_stage: 4,
-      design_photos: [photo("taff-demo-gowes-1"), photo("taff-demo-gowes-2")],
-      wo_photos: [photo("taff-demo-wo-1")],
+      design_photos: [photo("jc-demo-gowes-1"), photo("jc-demo-gowes-2")],
+      wo_photos: [photo("jc-demo-wo-1")],
       products: items("Jersey Cycling Full Printing", [
         ["S", 12],
         ["M", 20],
@@ -103,15 +103,15 @@ const seeds = [
     },
     // Tahap-tahap yang sudah dilalui, lengkap dengan catatan & waktunya.
     history: [
-      { status: "desain", note: "Brief diterima, mulai sketsa layout.", photo: "taff-demo-gowes-1", daysAgo: 3 },
-      { status: "layout", note: "Layout dikirim ke customer untuk review.", photo: "taff-demo-gowes-2", daysAgo: 2 },
+      { status: "desain", note: "Brief diterima, mulai sketsa layout.", photo: "jc-demo-gowes-1", daysAgo: 3 },
+      { status: "layout", note: "Layout dikirim ke customer untuk review.", photo: "jc-demo-gowes-2", daysAgo: 2 },
       { status: "profing_warna", note: "Profing warna disetujui, lanjut cetak.", photo: "", daysAgo: 1 },
       { status: "cetak_print", note: "Mulai cetak panel depan & belakang.", photo: "", daysAgo: 0 },
     ],
   },
   {
     order: {
-      order_number: "TAFF260930P7MN",
+      order_number: "JC260930P7MN",
       customer_name: `${DEMO_PREFIX}SMAN 2 Bantul`,
       customer_phone: "081234567902",
       customer_city: "Bantul",
@@ -125,8 +125,8 @@ const seeds = [
         "[DEMO] Pesanan tuntas dan sudah dikirim. Resi JNE terlampir di halaman tracking.",
       current_status: "kirim",
       current_stage: 11,
-      design_photos: [photo("taff-demo-sman-1")],
-      wo_photos: [photo("taff-demo-wo-2")],
+      design_photos: [photo("jc-demo-sman-1")],
+      wo_photos: [photo("jc-demo-wo-2")],
       products: items("Jersey Futsal Full Printing", [
         ["M", 10],
         ["L", 10],
@@ -139,7 +139,7 @@ const seeds = [
       updated_at: dayOffset(0),
     },
     history: [
-      { status: "desain", note: "Desain awal masuk.", photo: "taff-demo-sman-1", daysAgo: 12 },
+      { status: "desain", note: "Desain awal masuk.", photo: "jc-demo-sman-1", daysAgo: 12 },
       { status: "layout", note: "Penomoran punggung dikonfirmasi.", photo: "", daysAgo: 11 },
       { status: "profing_warna", note: "Profing warna lolos.", photo: "", daysAgo: 10 },
       { status: "cetak_print", note: "Cetak 24 set panel.", photo: "", daysAgo: 9 },

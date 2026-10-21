@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   TAFF Sportwear — design tokens.
+   JC Apparel — design tokens.
    Palet brand: Light Blue #D3EDEF · Turquoise #23BBB7 · Deep Blue #23627C · Cream #F0EADF.
    Turquoise dipakai untuk aksen di atas permukaan gelap, Deep Blue untuk aksen
    yang harus terbaca di atas cream/putih. Light values on :root, dark overrides under .dark.
@@ -23,7 +23,7 @@
   --brand-bad: #C0392B;
   --brand-bad-bg: #FCE9E4;
 
-  /* Brand gradient stops — turquoise TAFF Sportwear ke deep blue */
+  /* Brand gradient stops — turquoise JC Apparel ke deep blue */
   --color-brand-from: #23BBB7;
   --color-brand-via: #1B9A96;
   --color-brand-to: #23627C;
@@ -31,14 +31,14 @@
   /* Primary (CTA) — tombol hitam teks putih (.btn-d) */
   --color-primary: #0A0A0A;
   --color-primary-strong: #000000;
-  /* Secondary — turquoise TAFF Sportwear untuk highlight */
+  /* Secondary — turquoise JC Apparel untuk highlight */
   --color-secondary: #23BBB7;
   --color-secondary-strong: #1B9A96;
 
   /* Accent turquoise untuk promo / highlight */
   --color-accent: #23BBB7;
 
-  /* Backgrounds (light) — cream TAFF Sportwear (#F0EADF) */
+  /* Backgrounds (light) — cream JC Apparel (#F0EADF) */
   --color-background: #F0EADF;
   --color-background-canvas: #F0EADF;
   --color-background-bone: #EDEDE8;
@@ -51,7 +51,7 @@
   --color-surface-dark: #0A0A0A;
   --color-surface-deep: #050505;
 
-  /* Text (light) — hierarki hitam hangat ke abu ala mockup TAFF Sportwear */
+  /* Text (light) — hierarki hitam hangat ke abu ala mockup JC Apparel */
   --color-foreground: #0A0A0A;
   --color-ink: #0A0A0A;
   --color-body: #3A3A36;
@@ -95,7 +95,7 @@
     radial-gradient(50% 50% at 85% 20%, rgba(35, 98, 124, 0.06), transparent 60%),
     radial-gradient(60% 60% at 50% 100%, rgba(10, 10, 10, 0.03), transparent 60%);
 
-  /* TAFF Sportwear pakai Archivo — display mengikuti sans, mono dari --font-mono */
+  /* JC Apparel pakai Archivo — display mengikuti sans, mono dari --font-mono */
   --font-display: var(--font-sans);
 }
 
@@ -105,7 +105,7 @@
   --color-brand-via: #1B9A96;
   --color-brand-to: #23627C;
 
-  /* Primary — turquoise TAFF Sportwear di dark */
+  /* Primary — turquoise JC Apparel di dark */
   --color-primary: #23BBB7;
   --color-primary-strong: #1B9A96;
   /* Secondary — dark surface untuk tombol */
@@ -114,7 +114,7 @@
   /* Accent — turquoise */
   --color-accent: #23BBB7;
 
-  /* Backgrounds (dark) — hitam hangat ala sidebar TAFF Sportwear */
+  /* Backgrounds (dark) — hitam hangat ala sidebar JC Apparel */
   --color-background: #050505;
   --color-background-canvas: #050505;
   --color-background-bone: #1A1A1A;
@@ -395,7 +395,7 @@
 
 
 
-  /* Diagonal brand stripes — the signature TAFF Sportwear orange slashes from the
+  /* Diagonal brand stripes — the signature JC Apparel orange slashes from the
      reference art. Layered widths/opacities create the dynamic feel. */
   .stripes-brand {
     background-image: repeating-linear-gradient(
@@ -2160,7 +2160,7 @@
 
 :root {
   color-scheme: light;
-  /* ── TAFF Sportwear — Light Blue #D3EDEF · Turquoise #23BBB7 · Deep Blue #23627C · Cream #F0EADF ── */
+  /* ── JC Apparel — Light Blue #D3EDEF · Turquoise #23BBB7 · Deep Blue #23627C · Cream #F0EADF ── */
   --pas-bg: #F0EADF;
   --pas-surface: #FFFFFF;
   --pas-surface-2: #FAF6EE;
@@ -2377,7 +2377,7 @@ table.pas-tbl tbody tr:hover { background: #FAF6EE; }
   background: var(--brand-light-blue); color: var(--brand-deep-blue); border: 0;
 }
 
-/* ── TAFF Sportwear: brand tengah di sidebar (mockup .brand) ── */
+/* ── JC Apparel: brand tengah di sidebar (mockup .brand) ── */
 .pas-brand {
   display: flex; flex-direction: column; align-items: center; gap: 12px;
   padding: 6px 8px 26px; text-align: center;
@@ -2398,7 +2398,7 @@ table.pas-tbl tbody tr:hover { background: #FAF6EE; }
   text-transform: uppercase; margin-top: 3px;
 }
 
-/* ── TAFF Sportwear: user box gelap di bawah sidebar (mockup .user) ── */
+/* ── JC Apparel: user box gelap di bawah sidebar (mockup .user) ── */
 .pas-userbox {
   background: rgba(255,255,255,.14); border: 0;
   color: #fff; border-radius: 10px;
@@ -2533,7 +2533,7 @@ table.pas-tbl tbody tr:hover { background: #FAF6EE; }
 @media (max-width: 640px) { .pas-toast { right: 12px; left: 12px; top: 12px; transform: translateY(-8px); text-align: center; } .pas-toast.on { transform: translateY(0); } }
 
 .pas-display {
-  /* TAFF Sportwear: pakai Archivo (satu keluarga font) */
+  /* JC Apparel: pakai Archivo (satu keluarga font) */
   font-family: var(--font-sans), "Archivo", system-ui, sans-serif;
   letter-spacing: -.022em; color: var(--pas-ink-1); font-weight: 700;
 }
@@ -3001,7 +3001,7 @@ table.pas-tbl.pas-tbl-static tbody tr:hover { background: transparent; }
 /* ═══════════════════════════════════════════════════════════════════════════
    LAYAR LOGIN
    Struktur dari wireframe: panel brand bersudut di kiri untuk desktop,
-   tumpukan brand → judul → aksi untuk mobile. Warnanya tetap palet TAFF
+   tumpukan brand → judul → aksi untuk mobile. Warnanya tetap palet JC
    (hitam, oranye, krem) — bukan biru/merah bawaan wireframe.
    ═══════════════════════════════════════════════════════════════════════════ */
 

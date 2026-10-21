@@ -90,7 +90,7 @@ export default function LoginForm({ brand }: { brand: Brand }) {
           <input
             required
             autoFocus
-            name="taff-pesanan-pass"
+            name="jc-pesanan-pass"
             type={reveal ? "text" : "password"}
             autoComplete="current-password"
             value={password}

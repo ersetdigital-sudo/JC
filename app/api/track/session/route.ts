@@ -10,7 +10,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { clientIp, isTokenSharedAcrossDevices } from "@/lib/track-guard";
 
 /**
- * GET /api/track/session?order=TAFF-XXXXXX-XXX
+ * GET /api/track/session?order=JC-XXXXXX-XXX
  * Validates a signed session token and returns fresh order data.
  * Token can come from:
  *   1. Authorization: Bearer <token> header (primary — client stores in sessionStorage)
