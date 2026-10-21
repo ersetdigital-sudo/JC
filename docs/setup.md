@@ -1,0 +1,201 @@
+# Setup JC Apparel dari nol
+
+Panduan ini untuk instalasi baru: project Supabase, Cloudinary, dan Vercel
+milik JC Apparel sendiri. Semua langkah berurutan — jangan loncat.
+
+---
+
+## 1. Project Supabase
+
+1. Buat project baru di [supabase.com](https://supabase.com) (pilih region terdekat).
+2. **Database → Settings → API** (di dashboard versi baru: **Project Settings → API**).
+   Ambil tiga nilai ini:
+
+   | Nilai | Dipakai untuk | Boleh dibuka browser? |
+   | --- | --- | --- |
+   | Project URL | `NEXT_PUBLIC_SUPABASE_URL` | Ya |
+   | `anon` / `publishable` key | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Ya |
+   | `service_role` key | `SUPABASE_SERVICE_ROLE_KEY` | **Tidak** |
+
+   > `service_role` key melewati seluruh policy RLS. Jangan pernah ditaruh di
+   > repo, di `NEXT_PUBLIC_*`, atau di frontend.
+
+3. **Daftar akun (Auth)**: tidak perlu membuat user apa pun. Dashboard admin
+   pakai shared password (`PESANAN_PASSWORD`), bukan Supabase Auth. Pastikan
+   signup user dinonaktifkan di **Authentication → Providers → Email**.
+
+---
+
+## 2. Migrasi database
+
+Buka **SQL Editor** di dashboard Supabase, lalu jalankan file-file ini **berurutan**
+satu per satu (-copy paste isi file, klik Run):
+
+```
+supabase/migrations/0001_baseline_schema.sql
+supabase/migrations/0002_baseline_functions.sql
+supabase/migrations/0003_baseline_seed.sql
+supabase/migrations/0004_perbaiki_notifikasi_tahap.sql
+supabase/migrations/0005_rapikan_akses_warisan.sql
+supabase/migrations/0006_selaraskan_nama_tahap.sql
+supabase/migrations/0007_nomor_wa_resmi.sql
+supabase/migrations/0008_ulang_kirim_notif_gagal.sql
+supabase/migrations/0009_brand_vsp_sport.sql
+supabase/migrations/0010_brand_taff_sportwear.sql
+supabase/migrations/0011_ganti_logo_brand.sql
+supabase/migrations/0012_brand_jc_apparel.sql   ← rebrand ke JC Apparel
+```
+
+> Database **baru** = jalankan semuanya dari `0001`. Jangan pakai `0001`–`0003`
+> kalau kamu menyalin database lama — untuk itu cukup `0004` ke atas.
+
+`0003` mengisi baris `brand` dengan "MENARA", lalu `0009` → `0010` → `0011` →
+`0012` menimpanya sampai "JC Apparel". Jadi **jangan berhenti di `0003`**.
+
+### Verifikasi
+
+```sql
+-- Harus 1 baris: JC Apparel / JC / /brand-logo-jc.png
+select id, name, monogram, logo_path from public.brand where id = 1;
+
+-- Harus 11 baris (tahap jersey)
+select count(*) from public.production_steps;
+
+-- Harus 6 baris (tahap maklon)
+select count(*) from public.maklon_steps;
+
+-- Harus 11 tabel
+select count(*) from information_schema.tables
+  where table_schema = 'public' and table_type = 'BASE TABLE';
+
+-- Anon boleh baca brand (dibutuhkan halaman publik)
+select name, monogram from public.brand;  -- via anon key, bukan service role
+```
+
+---
+
+## 3. Environment variables
+
+Salin `.env.local.example` jadi `.env.local` lalu isi:
+
+```bash
+cp .env.local.example .env.local
+```
+
+| Variabel | Wajib | Cara dapat |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | ya | Project URL dari Supabase |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ya | Anon key dari Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | ya | Service role key dari Supabase |
+| `SETTINGS_ENCRYPTION_KEY` | ya | `openssl rand -base64 32` |
+| `TRACK_SESSION_SECRET` | ya | `openssl rand -hex 32` |
+| `PESANAN_PASSWORD` | ya | Password dashboard, pilihanmu sendiri |
+| `CRON_SECRET` | ya | `openssl rand -hex 32` |
+| `CLOUDINARY_CLOUD_NAME` | ya | Cloudinary dashboard |
+| `CLOUDINARY_API_KEY` | ya | Cloudinary dashboard |
+| `CLOUDINARY_API_SECRET` | ya | Cloudinary dashboard |
+| `CLOUDINARY_UPLOAD_PRESET` | ya | Cloudinary dashboard |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | ya | Sama dengan `CLOUDINARY_CLOUD_NAME` |
+| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | ya | Sama dengan `CLOUDINARY_UPLOAD_PRESET` |
+| `APP_URL` | ya | Domain produksi (`http://localhost:3000` untuk dev) |
+
+Tanpa Windows (PowerShell):
+
+```powershell
+# 4 secret wajib — generate sekali, simpan di password manager
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
+
+> **`TRACK_SESSION_SECRET` tidak boleh diganti setelah produksi.** Nilai ini
+> menandatangani token HMAC di link tracking. Kalau berubah, semua link yang
+> sudah dikirim ke customer langsung mati.
+>
+> **`SETTINGS_ENCRYPTION_KEY` juga tidak boleh diganti** — token Fonnte
+> disimpan terenkripsi dengannya.
+
+---
+
+## 4. Cloudinary
+
+1. Buat account di [cloudinary.com](https://cloudinary.com).
+2. **Settings → Upload → Upload presets → Add upload preset**:
+   - **Signing mode: Signed** ← wajib. Kalau dibiarkan *Unsigned*, siapa pun
+     yang baca cloud name dari source halaman bisa upload ke akunmu.
+   - Folder: `jc-apparel/desain` (harus sama dengan `CLOUDINARY_FOLDER` di
+     `lib/cloudinary.ts`).
+3. Ambil Cloud name, API key, API secret, dan nama preset.
+
+---
+
+## 5. Vercel
+
+1. Import repo ini ke Vercel (Framework: Next.js, otomatis terdeteksi).
+2. **Settings → Environment Variables** — isi **semua** variabel di tabel
+   tadi, untuk **Production** dan **Preview**.
+3. `APP_URL` = domain produksi kamu, mis. `https://jcapparel.id`.
+   Domain ini yang dipakai membangun link tracking yang dikirim ke customer.
+4. Deploy.
+
+### Cron pengingat deadline
+
+`vercel.json` tidak memuat blok `crons` — pengingat deadline dijalankan dari
+[cron-job.org](https://cron-job.org):
+
+| Field | Isi |
+| --- | --- |
+| URL | `https://<domain-kamu>/api/admin/deadline-notif` |
+| Header | `Authorization: Bearer <CRON_SECRET>` |
+| Timezone | `Asia/Jakarta` |
+| Schedule | Every hour |
+
+Per jam, bukan sekali sehari — panel admin mengizinkan operator memilih
+"Jam Kirim (WIB)" mana saja, jadi route yang memutuskan apakah sudah waktunya
+kirim, bukan jadwalnya.
+
+---
+
+## 6. Token Fonnte (WhatsApp)
+
+Di dalam dashboard admin: **Pengaturan → WhatsApp** → isi token Fonnte → Simpan.
+Token disimpan terenkripsi (AES-256-GCM) dengan `SETTINGS_ENCRYPTION_KEY`, jadi
+tidak pernah menyentuh repo atau halaman.
+
+> Ganti `CLOUDINARY_FOLDER` di `lib/cloudinary.ts` kalau kamu pakai folder
+> Cloudinary yang berbeda.
+
+---
+
+## 7. Data contoh (opsional)
+
+Dua seeder tersedia kalau mau ada data untuk klik-klik:
+
+```bash
+node scripts/seed-pesanan-demo.mjs   # pesanan jersey + riwayat tahap
+node scripts/seed-maklon-demo.mjs    # pesanan maklon
+```
+
+Keduanya hanya menulis baris bernama "Demo …" dan menerima `--clean` untuk
+menghapus tepat baris itu saja.
+
+---
+
+## 8. Logo
+
+Logo di `public/` masih placeholder. Ganti dengan logo JC Apparel asli —
+lihat [`brand-assets.md`](brand-assets.md) untuk nama berkas, cara menukar,
+dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
+
+---
+
+## Checklist sebelum production
+
+- [ ] Migrasi `0001`–`0012` jalan tanpa error
+- [ ] `select name, monogram from public.brand` → `JC Apparel` / `JC`
+- [ ] 11 tabel terbentuk, 11 tahap jersey + 6 tahap maklon
+- [ ] `service_role` key **tidak** ada di repo / `NEXT_PUBLIC_*`
+- [ ] 4 secret wajib di-set dan **tidak** sama dengan nilai contoh
+- [ ] Upload preset Cloudinary mode **Signed**
+- [ ] `APP_URL` = domain produksi
+- [ ] Cron deadline-notif jalan (cek Vercel/cron-job.org log)
+- [ ] `tsc --noEmit` dan `next build` bersih
+- [ ] Logo sudah diganti

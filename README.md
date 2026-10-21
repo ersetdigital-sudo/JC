@@ -165,6 +165,10 @@ Claims are cheap, so these were checked against the live project rather than ass
 The app is self-contained: one Supabase project, one Cloudinary account, one Vercel
 project. `.env.local.example` lists every variable with a note on what it is for.
 
+**[`docs/setup.md`](docs/setup.md) is the step-by-step guide** — creating the Supabase
+project, running the migrations in order, the Cloudinary signed-upload preset, the
+Vercel environment variables, the deadline cron, and a pre-launch checklist.
+
 ```bash
 pnpm install
 cp .env.local.example .env.local   # then fill in the values
