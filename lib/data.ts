@@ -34,5 +34,5 @@ export const brand: Brand = {
   description:
     "JC Apparel — tempat bikin jersey futsal custom full printing. Desain bebas, harga mulai 85rb, kirim se-Indonesia. Konsultasi gratis via WhatsApp.",
   whatsappNumber: WA_NUMBER,
-  logoPath: "/brand-logo-jc.png",
+  logoPath: "/brand-logo.png",
 };

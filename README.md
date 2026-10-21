@@ -46,7 +46,7 @@ This platform turns that flow into a tracked, self-reporting pipeline: the momen
 
 The shop identity lives in the `brand` table — name, monogram, tagline, description, WhatsApp number and logo path are read at request time, so the operator can change them from **Settings → Shop Profile** without a redeploy. `lib/data.ts` holds a fallback used only when the database is unreachable.
 
-The logo itself is two files in `public/`: `brand-logo-jc.png` (the horizontal lockup, 900×384) and `logo-jc-mark.png` (the monogram mark, 128×128). Both are currently placeholders — swap in the real artwork. Because assets under `public/` are served with `Cache-Control: immutable, max-age=31536000`, replacing a file in place will not be visible for a year; rename the file and update its path instead. Full instructions, the palette and every place the brand name is hardcoded are in [`docs/brand-assets.md`](docs/brand-assets.md).
+The logo is one mark — a "JC" monogram — used in two sizes under `public/` (`brand-logo.png` for the admin sidebar and login page, `logo-mark.png` for the public pages) plus the app icons in `app/`. The shop name is rendered as text next to the mark, so there is no separate wordmark asset. All of them are generated from a single master file by `scripts/make-brand-assets.py`. Because assets under `public/` are served with `Cache-Control: immutable, max-age=31536000`, replacing a file in place will not be visible for a year; rename the file and update its path instead. Full instructions, the palette and every place the brand name is hardcoded are in [`docs/brand-assets.md`](docs/brand-assets.md).
 
 Order numbers moved from the `TAFF` prefix to `JC` with this rebrand. The old prefixes (`TAFF`, `VSP`, `MENARA`) are still accepted by the tracking page, so links already sent to customers keep resolving.
 
@@ -136,7 +136,7 @@ Claims are cheap, so these were checked against the live project rather than ass
 
 | Check | Result |
 |---|---|
-| Migrations `0001`–`0012` applied to a fresh database | 11 tables created, versions recorded in `supabase_migrations` |
+| Migrations `0001`–`0013` applied to a fresh database | 11 tables created, versions recorded in `supabase_migrations` |
 | Anon key reads the public brand row | `200` — intended, this is the shop identity the status pages need |
 | Anon key writes a fabricated order | `401` — `new row violates row-level security policy for table "orders"` |
 | Signed upload without a session | `401` from the sign endpoint |
@@ -172,7 +172,7 @@ Vercel environment variables, the deadline cron, and a pre-launch checklist.
 ```bash
 pnpm install
 cp .env.local.example .env.local   # then fill in the values
-# run migrations 0001 → 0012 in the Supabase SQL editor
+# run migrations 0001 → 0013 in the Supabase SQL editor
 pnpm dev
 ```
 

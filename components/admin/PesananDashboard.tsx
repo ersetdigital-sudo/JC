@@ -565,7 +565,7 @@ export default function PesananDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo-jc.png" alt={brandName} />
+            <img src="/brand-logo.png" alt={brandName} />
           </span>
           <span className="block text-center">
             <span className="pas-brand-name">{brandName}</span>
@@ -724,7 +724,7 @@ export default function PesananDashboard({
           {/* Drawer header — satu-satunya tempat logo brand muncul di ponsel */}
           <div className="flex items-center mb-2 pr-8">
             <a href="/" className="flex flex-col gap-2 min-w-0">
-              <img src="/brand-logo-jc.png" alt={brandName} className="h-10 w-auto max-w-[150px] object-contain object-left" />
+              <img src="/brand-logo.png" alt={brandName} className="h-10 w-auto max-w-[150px] object-contain object-left" />
               <span className="pas-brand-name !text-[15px]">{brandName}</span>
             </a>
           </div>

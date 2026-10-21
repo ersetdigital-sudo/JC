@@ -88,7 +88,7 @@ export default function TrackForm({
             <a href="/" className="flex items-center gap-3">
 {/* Mark saja (tanpa wordmark), karena teks JC Apparel sudah ada di sampingnya */}
                 <img
-                  src="/logo-jc-mark.png"
+                  src="/logo-mark.png"
                   alt=""
                   aria-hidden="true"
                   className="h-10 w-auto"

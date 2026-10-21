@@ -1,32 +1,39 @@
 # Aset brand JC Apparel
 
-Semua aset logo ada di `public/`. Ganti isinya, **jangan ganti nama berkasnya**
-kecuali kamu memang sedang melakukan rebranding lagi (lihat catatan cache di bawah).
+Logo resmi JC Apparel sudah terpasang: monogram "JC" (bentuk kepala fox/wolf)
+sebagai satu-satunya lambang — **tanpa wordmark terpisah**, karena nama brand
+sudah dirender sebagai teks di samping mark-nya di sidebar dashboard dan
+halaman login.
 
 | Berkas | Ukuran | Dipakai di |
 | --- | --- | --- |
-| `public/brand-logo-jc.png` | 900 × 384 | Sidebar dashboard admin (`PesananDashboard`, `MaklonDashboard`) dan halaman login |
-| `public/logo-jc-mark.png` | 128 × 128 | Header/footer halaman publik: beranda, `/track`, `/status`, `/status/maklon` |
+| `public/brand-logo.png` | 600 × 406 | Sidebar dashboard admin (`PesananDashboard`, `MaklonDashboard`) dan halaman login |
+| `public/logo-mark.png` | 384 × 260 | Header/footer halaman publik: beranda, `/track`, `/status`, `/status/maklon` |
+| `app/icon.png` | 512 × 512 | Ikon tab browser & PWA |
+| `app/apple-icon.png` | 180 × 180 | Ikon "Add to Home Screen" di iOS |
+| `app/favicon.ico` | 16/32/48 | Favicon |
+| `docs/design/logo-jc-source.png` | 1536 × 1024 | Logo sumber (master) — dasar semua aset di atas |
 
-Berkas di repo ini masih **placeholder** (badge monogram "JC" dengan palet lama).
-Ganti dengan logo asli kamu.
+Logo di `public/` berlatar **transparan** (dipakai di atas latar gelap sidebar).
+Ikon aplikasi diletakkan di atas latar gelap `#0A0A0A` supaya mark putihnya
+kelihatan di tab browser berlatar terang.
 
-## Cara menukar logo
+## Kalau logonya diganti
 
-1. Simpan logo lockup-mu sebagai `public/brand-logo-jc.png` (rasio 900×384, PNG
-   dengan background transparan).
-2. Simpan monogram/mark-mu sebagai `public/logo-jc-mark.png` (rasio 1:1, 128×128).
-3. Kalau nama berkasnya berbeda, update tiga tempat:
-   - `lib/data.ts` → `brand.logoPath` (fallback saat database tidak terjangkau)
-   - `supabase/migrations/0012_brand_jc_apparel.sql` → `logo_path` (untuk database baru)
-   - `components/admin/PesananDashboard.tsx` & `components/admin/MaklonDashboard.tsx`
-     → `src="/brand-logo-jc.png"`
-   - `app/page.tsx`, `app/track/TrackForm.tsx`, `app/status/StatusClient.tsx`,
-     `app/status/maklon/page.tsx` → `src="/logo-jc-mark.png"`
+Jangan diedit manual satu per satu — jalankan ulang generator:
 
-## Catatan cache (penting)
+```bash
+# 1. ganti docs/design/logo-jc-source.png dengan logo barumu (PNG RGBA)
+# 2. jalankan:
+python scripts/make-brand-assets.py
+```
 
-`next.config.mjs` menyajikan seluruh aset di `public/` dengan header:
+Skrip itu memotong logo ke area isinya, resize, dan menulis ulang keenam
+aset sekaligus.
+
+## Kalau nama berkasnya diganti (mis. karena ganti brand lagi)
+
+Aset di `public/` dilayani dengan header:
 
 ```
 Cache-Control: public, max-age=31536000, immutable
@@ -37,18 +44,20 @@ CDN menyimpan berkas itu selama satu tahun. Kalau kamu menukar logo dengan nama
 berkas yang sama, sebagian besar pengguna akan tetap melihat logo lama.
 
 Solusinya: **ubah nama berkasnya** saat menukar logo, lalu update path-nya di
-empat tempat yang disebut di atas. Contoh:
+empat tempat ini:
 
-```
-public/brand-logo-jc.png      →  public/brand-logo-jc-v2.png
-public/logo-jc-mark.png       →  public/logo-jc-mark-v2.png
-```
+- `lib/data.ts` → `brand.logoPath` (fallback saat database tidak terjangkau)
+- `supabase/migrations/0013_logo_brand_final.sql` → `logo_path` (untuk database baru)
+- `components/admin/PesananDashboard.tsx` & `components/admin/MaklonDashboard.tsx`
+  → `src="/brand-logo.png"`
+- `app/page.tsx`, `app/track/TrackForm.tsx`, `app/status/StatusClient.tsx`,
+  `app/status/maklon/page.tsx` → `src="/logo-mark.png"`
 
-Sebagai ganti, kalau `logo_path` di tabel `brand` (database) yang jadi sumber
-kebenaran, cukup jalankan satu `update` — tidak perlu deploy ulang:
+Kalau `logo_path` di tabel `brand` (database) yang jadi sumber kebenaran, cukup
+jalankan satu `update` — tidak perlu deploy ulang:
 
 ```sql
-update public.brand set logo_path = '/brand-logo-jc-v2.png' where id = 1;
+update public.brand set logo_path = '/brand-logo-v2.png' where id = 1;
 ```
 
 ## Warna brand

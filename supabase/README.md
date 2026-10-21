@@ -40,6 +40,7 @@ Semua file dijalankan manual lewat Supabase **SQL Editor** (atau `psql`), tidak 
 | `0010_brand_taff_sportwear.sql` | Rebrand identitas toko ke **TAFF Sportwear**: nama, monogram, deskripsi, dan logo di baris `brand`. Isinya sengaja tidak diubah setelah dijalankan — migrasi yang sudah jalan tidak boleh diedit, karena Supabase melacak migrasi per versi |
 | `0011_ganti_logo_brand.sql` | Ganti berkas logo brand ke `/brand-logo.png`. Nama berkasnya ikut berubah karena aset di `public/` dilayani `immutable` selama setahun — menimpa isi di URL yang sama tidak akan terlihat |
 | `0012_brand_jc_apparel.sql` | Rebrand identitas toko ke **JC Apparel**: nama, monogram, tagline, deskripsi, dan `logo_path` di baris `brand` |
+| `0013_logo_brand_final.sql` | Logo brand final: `logo_path` diarahkan ke `/brand-logo.png` (monogram JC). Nama berkasnya sengaja netral-nama-brand supaya aset `public/` bisa dipakai ulang saat brand diganti lagi — sekaligus menghindari cache `immutable` 1 tahun |
 
 ## Tabel (11)
 

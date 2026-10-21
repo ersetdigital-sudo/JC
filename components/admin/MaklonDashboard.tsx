@@ -287,7 +287,7 @@ export default function MaklonDashboard({
       <aside className="pas-side">
         <a href="/" className="pas-brand">
           <span className="pas-brand-mark">
-            <img src="/brand-logo-jc.png" alt={brandName} />
+            <img src="/brand-logo.png" alt={brandName} />
           </span>
           <span className="block text-center">
             <span className="pas-brand-name">{brandName}</span>

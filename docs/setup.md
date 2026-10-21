@@ -9,7 +9,7 @@ milik JC Apparel sendiri. Semua langkah berurutan — jangan loncat.
 
 | Service | Status |
 | --- | --- |
-| **Supabase** | ✅ Project **JC APPAREL** sudah dibuat — ref `jvdqphlwulgtssxgpebq`, region `ap-southeast-2` (Sydney), URL `https://jvdqphlwulgtssxgpebq.supabase.co`. Migrasi `0001`–`0012` sudah dijalankan dan tercatat di `public.supabase_migrations`. Signup Auth sudah dimatikan. |
+| **Supabase** | ✅ Project **JC APPAREL** sudah dibuat — ref `jvdqphlwulgtssxgpebq`, region `ap-southeast-2` (Sydney), URL `https://jvdqphlwulgtssxgpebq.supabase.co`. Migrasi `0001`–`0013` sudah dijalankan dan tercatat di `public.supabase_migrations`. Signup Auth sudah dimatikan. |
 | **Cloudinary** | ✅ Akun **`rzwe62ed`** — preset `ml_default` sudah disetel **signed**, folder `jc-apparel/desain`, format jpg/png/webp, batas 10 MB. Sudah diuji end-to-end (upload signed jalan, tanpa signature ditolak, aset mendarat di folder yang benar). |
 | **Vercel** | ✅ **LIVE** di **https://jc-apparel.vercel.app** — project `jc-apparel`, linked ke repo `ersetdigital-sudo/JC` branch `main`, auto-deploy aktif. 14 env var terpasang (production + preview + development). |
 | **Fonnte** | ⬜ Belum — token device, diisi dari dashboard → Pengaturan → WhatsApp |
@@ -67,18 +67,19 @@ supabase/migrations/0009_brand_vsp_sport.sql
 supabase/migrations/0010_brand_taff_sportwear.sql
 supabase/migrations/0011_ganti_logo_brand.sql
 supabase/migrations/0012_brand_jc_apparel.sql   ← rebrand ke JC Apparel
+supabase/migrations/0013_logo_brand_final.sql  ← logo monogram JC final
 ```
 
 > Database **baru** = jalankan semuanya dari `0001`. Jangan pakai `0001`–`0003`
 > kalau kamu menyalin database lama — untuk itu cukup `0004` ke atas.
 
 `0003` mengisi baris `brand` dengan "MENARA", lalu `0009` → `0010` → `0011` →
-`0012` menimpanya sampai "JC Apparel". Jadi **jangan berhenti di `0003`**.
+`0012` menimpanya sampai "JC Apparel", lalu `0013` menaruh logo final. Jadi **jangan berhenti di `0003`**.
 
 ### Verifikasi
 
 ```sql
--- Harus 1 baris: JC Apparel / JC / /brand-logo-jc.png
+-- Harus 1 baris: JC Apparel / JC / /brand-logo.png
 select id, name, monogram, logo_path from public.brand where id = 1;
 
 -- Harus 11 baris (tahap jersey)
@@ -284,15 +285,15 @@ menghapus tepat baris itu saja.
 
 ## 8. Logo
 
-Logo di `public/` masih placeholder. Ganti dengan logo JC Apparel asli —
-lihat [`brand-assets.md`](brand-assets.md) untuk nama berkas, cara menukar,
-dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
+Logo resmi JC Apparel sudah terpasang (monogram "JC"). Kalau mau menukarnya,
+ganti `docs/design/logo-jc-source.png` lalu jalankan `python scripts/make-brand-assets.py` —
+detailnya di [`brand-assets.md`](brand-assets.md).
 
 ---
 
 ## Checklist sebelum production
 
-- [x] Migrasi `0001`–`0012` jalan tanpa error, tercatat di `public.supabase_migrations`
+- [x] Migrasi `0001`–`0013` jalan tanpa error, tercatat di `public.supabase_migrations`
 - [x] `select name, monogram from public.brand` → `JC Apparel` / `JC`
 - [x] 11 tabel terbentuk, 11 tahap jersey + 6 tahap maklon
 - [x] Signup Supabase Auth dimatikan (`disable_signup = true`)
@@ -306,7 +307,7 @@ dan catatan cache (`immutable` 1 tahun, jadi nama file sebaiknya baru).
 - [ ] 4 secret wajib sudah di-set di Vercel — **rotasi setelah installs selesai**
 - [ ] Cron deadline-notif dibuat di cron-job.org (URL di bagian 5) **dan** dinyalakan dari dashboard → Pengaturan → Notifikasi Deadline
 - [ ] Token Fonnte diisi dari dashboard → Pengaturan → WhatsApp
-- [ ] Logo sudah diganti
+- [x] Logo resmi JC Apparel terpasang (`public/brand-logo.png`, `public/logo-mark.png`, ikon app)
 - [ ] Token Supabase (personal access token) dirotasi — token yang dipakai saat setup sudah pernah tampil di chat
 - [ ] Token Cloudinary **API secret** dirotasi kalau pernah tampil di chat — dia bisa menghapus SEMUA aset di akun `rzwe62ed`
 - [ ] Token Vercel dirotasi kalau pernah tampil di chat

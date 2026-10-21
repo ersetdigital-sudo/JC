@@ -146,7 +146,7 @@ function Shell({ children }: { children: React.ReactNode }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   {/* Mark saja (tanpa wordmark), karena teks JC Apparel ada di sampingnya */}
                   <img
-                    src="/logo-jc-mark.png"
+                    src="/logo-mark.png"
                     alt=""
                     aria-hidden="true"
                     className="h-8 w-auto"
