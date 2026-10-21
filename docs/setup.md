@@ -117,13 +117,79 @@ Tanpa Windows (PowerShell):
 
 ## 4. Cloudinary
 
+Cloudinary menyimpan foto desain dan foto work order (WO). Akun **wajib baru**
+untuk JC Apparel — jangan pakai akun toko sebelumnya, karena `CLOUDINARY_API_SECRET`
+kita pegang dan foto tertaut ke database JC Apparel.
+
+### 4.1 Buat akun & ambil kredensial
+
 1. Buat account di [cloudinary.com](https://cloudinary.com).
-2. **Settings → Upload → Upload presets → Add upload preset**:
-   - **Signing mode: Signed** ← wajib. Kalau dibiarkan *Unsigned*, siapa pun
-     yang baca cloud name dari source halaman bisa upload ke akunmu.
-   - Folder: `jc-apparel/desain` (harus sama dengan `CLOUDINARY_FOLDER` di
-     `lib/cloudinary.ts`).
-3. Ambil Cloud name, API key, API secret, dan nama preset.
+2. **Settings → API Keys** (atau dashboard overview) — salin:
+   - **Cloud name**
+   - **API key**
+   - **API secret**  ← jangan pernah masuk repo / `NEXT_PUBLIC_*`
+
+### 4.2 Buat upload preset
+
+**Settings → Upload → Upload presets → Add upload preset**:
+
+| Setting | Isi | Kenapa |
+| --- | --- | --- |
+| **Preset name** | `jc-apparel-signed` | Nama bebas, tapi harus sama persis dengan `CLOUDINARY_UPLOAD_PRESET` |
+| **Signing mode** | **Signed** | **Wajib.** Kalau *Unsigned*, siapa pun yang baca cloud name dari source halaman bisa upload ke akunmu tanpa izin |
+| **Folder** | `jc-apparel/desain` | Harus sama dengan `CLOUDINARY_FOLDER` di `lib/cloudinary.ts` |
+| **Allowed formats** | `jpg, jpeg, png, webp` | Sesuai `ALLOWED_IMAGE_TYPES` di `lib/cloudinary.ts` |
+| **Access control / Access mode** | **Public** (default) | Foto desain ditampilkan ke customer lewat halaman tracking |
+| **Transformation settings** | **kosongkan** | Transformasi `f_auto,q_auto,w_N` sudah diterapkan saat delivery lewat URL — eager transform di preset cuma menambah tagihan |
+
+> **Soal "Restricted access".** Kalau kamu mengaktifkan *Restrict access* di
+> preset, folder yang diizinkan **harus** memuat `jc-apparel/desain`. Kalau tidak,
+> upload ditolak dengan "folder not allowed" — gejalanya operator cuma lihat
+> "Upload gagal".
+
+### 4.3 Env var
+
+Isi **enam** variabel ini — dua pasang di antaranya harus bernilai sama:
+
+```
+CLOUDINARY_CLOUD_NAME          = <cloud name>
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = <cloud name>          ← sama
+
+CLOUDINARY_UPLOAD_PRESET       = jc-apparel-signed
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET = jc-apparel-signed ← sama
+
+CLOUDINARY_API_KEY             = <api key>
+CLOUDINARY_API_SECRET          = <api secret>
+```
+
+`NEXT_PUBLIC_*` dipakai browser (nama cloud & preset memang kelihatan di
+public — itu normal, yang dirahasiakan API secret). `CLOUDINARY_API_KEY` /
+`CLOUDINARY_API_SECRET` hanya dipakai server untuk menandatangani upload dan
+menghapus aset.
+
+### 4.4 Verifikasi
+
+1. Deploy / jalankan app dengan env var di atas.
+2. Login ke dashboard → **Pesanan → Tambah pesanan** → unggah foto desain.
+3. Foto harus muncul, dan URL-nya diawali:
+   `https://res.cloudinary.com/<cloud-name>/image/upload/...`
+4. Cek di [Cloudinary → Media Library](https://cloudinary.com/console/media_library)
+   → folder `jc-apparel/desain` → filenya ada.
+
+Kalau upload gagal:
+- **"Signing mode" bukan Signed** → presetnya salah setelan.
+- **"Folder not allowed"** → preset Restrict access tidak mengizinkan
+  `jc-apparel/desain`.
+- **"Server belum dikonfigurasi"** → `CLOUDINARY_API_SECRET` belum di-set.
+
+> **Catatan (bukan bagian setup, tapi perlu diketahui):** foto work order
+> (`wo_photos`, admin-only) dan foto desain (customer-facing) memakai **preset
+> dan folder yang sama**, jadi keduanya punya delivery publik. URL-nya hanya
+> disimpan di database dan tidak pernah ditampilkan ke customer, tapi kalau
+> mau memisahkannya, jalurnya: dua preset + dua folder, dan `CLOUDINARY_FOLDER`
+> di `lib/cloudinary.ts` jadi dua konstanta (`CLOUDINARY_FOLDER_PUBLIC` dan
+> `CLOUDINARY_FOLDER_PRIVATE`). Itu perubahan di luar cakupan rebrand — bilang
+> aja kalau mau dikerjakan.
 
 ---
 
