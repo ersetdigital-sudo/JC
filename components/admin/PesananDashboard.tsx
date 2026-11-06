@@ -24,7 +24,7 @@ import { waNote } from "@/lib/notif-note";
 import { buildWhatsAppLink, compactPhone } from "@/lib/wa";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import UploadIndicator from "@/components/admin/UploadIndicator";
-import { Search, AlertTriangle } from "lucide-react";
+import { Search, AlertTriangle, Eye, EyeOff } from "lucide-react";
 
 type StepRow = { id: string; name: string; position: number };
 
@@ -101,7 +101,7 @@ export type OrderData = {
 };
 
 type FilterKey = "all" | "baru" | "produksi" | "kirim" | "selesai";
-type ViewKey = "pesanan" | "jadwal" | "kirim" | "customer" | "laporan" | "notif" | "setting";
+type ViewKey = "pesanan" | "jadwal" | "kirim" | "customer" | "laporan" | "notif" | "setting" | "akun";
 
 const FILTER_LABEL: Record<FilterKey, string> = {
   all: "Semua",
@@ -119,6 +119,7 @@ const VIEW_META: Record<ViewKey, { crumb: string; title: string }> = {
   laporan: { crumb: "Data", title: "Laporan" },
   notif: { crumb: "Data", title: "Notifikasi" },
   setting: { crumb: "Data", title: "Pengaturan" },
+  akun: { crumb: "Data", title: "Akun" },
 };
 
 /* ── Laporan: filter bulan, produk & kapasitas ─────────────────────────── */
@@ -426,6 +427,12 @@ function NavIcon({ name, size = 18 }: { name: string; size?: number }) {
         <path d="M13.73 21a2 2 0 01-3.46 0" />
       </>
     ),
+    akun: (
+      <>
+        <path d="M12 3l7 4v5c0 4.5-3 8.2-7 9-4-.8-7-4.5-7-9V7l7-4z" />
+        <path d="M9.5 12.5l1.8 1.8 3.4-3.6" />
+      </>
+    ),
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -606,7 +613,7 @@ export default function PesananDashboard({
         </nav>
         <p className="pas-navsec">Data</p>
         <nav className="flex flex-col gap-1">
-          {(["customer", "laporan", "notif", "setting"] as ViewKey[]).map((key) => (
+          {(["customer", "laporan", "notif", "setting", "akun"] as ViewKey[]).map((key) => (
             <a
               key={key}
               className={`pas-navlink ${currentView === key ? "on" : ""}`}
@@ -714,6 +721,7 @@ export default function PesananDashboard({
             />
           )}
           {currentView === "notif" && <ViewNotif showToast={showToast} orders={orders} />}
+          {currentView === "akun" && <ViewAkun showToast={showToast} />}
           </>
         </main>
       </div>
@@ -759,7 +767,7 @@ export default function PesananDashboard({
           </nav>
           <p className="pas-navsec">Data</p>
           <nav className="flex flex-col gap-1">
-            {(["customer", "laporan", "notif", "setting"] as ViewKey[]).map((key) => (
+            {(["customer", "laporan", "notif", "setting", "akun"] as ViewKey[]).map((key) => (
               <a
                 key={key}
                 className={`pas-navlink ${currentView === key ? "on" : ""}`}
@@ -2621,6 +2629,167 @@ function ViewLaporan({ orders, steps }: { orders: OrderData[]; steps: StepRow[] 
     </div>
   );
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   VIEW: AKUN
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function PasswordField({
+  label,
+  value,
+  onChange,
+  autoComplete,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  autoComplete: "current-password" | "new-password";
+}) {
+  const [reveal, setReveal] = useState(false);
+
+  return (
+    <label className="block mt-4">
+      <span className="text-[13px] text-[var(--pas-muted)]">{label}</span>
+      <div className="relative mt-1.5">
+        <input
+          className="pas-field w-full px-4 py-2.5 pr-11 text-[15px]"
+          type={reveal ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          autoComplete={autoComplete}
+          placeholder="••••••••"
+        />
+        <button
+          type="button"
+          onClick={() => setReveal((v) => !v)}
+          aria-label={reveal ? "Sembunyikan password" : "Tampilkan password"}
+          aria-pressed={reveal}
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 text-[var(--pas-muted)] hover:text-[var(--pas-ink-1)] transition-colors"
+        >
+          {reveal ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
+      </div>
+    </label>
+  );
+}
+
+function ViewAkun({ showToast }: { showToast: (msg: string) => void }) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (saving) return;
+    setError("");
+
+    if (!currentPassword) {
+      setError("Password saat ini wajib diisi.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError("Password baru minimal 8 karakter.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("Konfirmasi password belum sama.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/akun/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        setError(data?.error || "Gagal mengubah password.");
+        return;
+      }
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      showToast("Password berhasil diubah");
+    } catch {
+      setError("Tidak bisa menghubungi server. Periksa koneksi, lalu coba lagi.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <>
+      <p className="text-[14px] text-[var(--pas-muted)] mb-5">
+        Password yang dipakai untuk masuk ke dashboard Pesanan dan Maklon.
+      </p>
+      <div className="pas-card p-5 max-w-xl">
+        <p className="font-semibold text-[15px]">Ganti Password</p>
+        <p className="text-[12.5px] text-[var(--pas-muted)] mt-1">
+          Setelah diganti, password baru langsung berlaku untuk semua admin.
+        </p>
+
+        <form onSubmit={handleSubmit} noValidate>
+          <PasswordField
+            label="Password saat ini"
+            autoComplete="current-password"
+            value={currentPassword}
+            onChange={(v) => {
+              setCurrentPassword(v);
+              setError("");
+            }}
+          />
+          <PasswordField
+            label="Password baru"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(v) => {
+              setNewPassword(v);
+              setError("");
+            }}
+          />
+          <PasswordField
+            label="Ulangi password baru"
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(v) => {
+              setConfirmPassword(v);
+              setError("");
+            }}
+          />
+
+          <p className="text-[11.5px] text-[var(--pas-muted)] mt-3">
+            Minimal 8 karakter.
+          </p>
+
+          {error && (
+            <p role="alert" className="pas-auth-error mt-4">
+              <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+              <span>{error}</span>
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={saving}
+            aria-busy={saving}
+            className="pas-btn-accent w-full py-3 text-[14px] mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {saving ? "Menyimpan..." : "Simpan password baru"}
+          </button>
+        </form>
+      </div>
+      <p className="text-[11.5px] text-[var(--pas-muted)] mt-4 max-w-xl">
+        Sesi yang sudah login di perangkat lain tetap aktif sampai cookie-nya
+        kedaluwarsa (maksimal 7 hari).
+      </p>
+    </>
+  );
+}
+
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    VIEW: PENGATURAN

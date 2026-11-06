@@ -1,37 +1,45 @@
 import { NextResponse } from "next/server";
+import {
+  normalizePassword,
+  resolveAdminPasswordSource,
+  verifyAgainstSource,
+} from "@/lib/admin-password";
 
 /**
- * Password dashboard HANYA dari environment — sengaja tidak ada nilai cadangan.
+ * Password dashboard dari database (`app_settings.admin_password_hash`) atau,
+ * kalau belum pernah diganti, dari env `PESANAN_PASSWORD` — sengaja tidak ada
+ * nilai cadangan yang ditulis di kode.
  *
  * Dulu ada nilai cadangan yang ditulis langsung di baris ini, dan itu dua
  * masalah sekaligus: password produksi jadi tertulis di repo (siapa pun yang
  * membaca kode bisa mencobanya), dan mengosongkan env var TIDAK benar-benar
  * menutup akses karena nilai cadangan itu tetap berlaku sebagai pintu belakang.
  */
-const AUTH_SECRET = (process.env.PESANAN_PASSWORD || "").trim();
-
 export async function POST(request: Request) {
-  if (!AUTH_SECRET) {
+  const source = await resolveAdminPasswordSource();
+
+  if (!source) {
     // Gagal-tertutup: lebih baik login ditolak daripada diam-diam memakai
     // password yang ada di kode.
-    console.error("[pesanan-auth] ditolak: PESANAN_PASSWORD belum di-set di environment");
+    console.error(
+      "[pesanan-auth] ditolak: PESANAN_PASSWORD belum di-set dan belum ada password tersimpan"
+    );
     return NextResponse.json(
       { error: "Server belum dikonfigurasi: PESANAN_PASSWORD belum di-set." },
       { status: 500 }
     );
   }
 
-  const { password } = await request.json();
+  const { password } = await request.json().catch(() => ({ password: "" }));
 
   // Trim dulu: spasi/newline yang kebawa dari autofill atau paste sering bikin gagal.
-  const submitted = typeof password === "string" ? password.trim() : "";
-  const expected = AUTH_SECRET;
+  const submitted = normalizePassword(password);
 
-  if (submitted !== expected) {
+  if (!verifyAgainstSource(submitted, source)) {
     // Catat panjangnya saja (bukan isinya) biar gampang diagnosa lewat Vercel logs.
     console.warn("[pesanan-auth] mismatch", {
       receivedLength: submitted.length,
-      expectedLength: expected.length,
+      source: source.kind,
     });
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }

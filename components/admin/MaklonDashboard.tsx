@@ -142,6 +142,12 @@ function NavIcon({ name, size = 18 }: { name: string; size?: number }) {
         <path d="M13.73 21a2 2 0 01-3.46 0" />
       </>
     ),
+    akun: (
+      <>
+        <path d="M12 3l7 4v5c0 4.5-3 8.2-7 9-4-.8-7-4.5-7-9V7l7-4z" />
+        <path d="M9.5 12.5l1.8 1.8 3.4-3.6" />
+      </>
+    ),
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -325,6 +331,9 @@ export default function MaklonDashboard({
           </a>
           <a className="pas-navlink" href="/pesanan/orders#setting">
             <span className="pas-ic"><NavIcon name="setting" /></span> Pengaturan
+          </a>
+          <a className="pas-navlink" href="/pesanan/orders#akun">
+            <span className="pas-ic"><NavIcon name="akun" /></span> Akun
           </a>
         </nav>
         <div className="pas-userbox mt-auto p-3 flex items-center gap-3">
